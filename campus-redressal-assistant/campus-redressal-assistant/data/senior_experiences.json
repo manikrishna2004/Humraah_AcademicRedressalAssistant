@@ -1,0 +1,65 @@
+[
+  {
+    "category": "Academic",
+    "subcategory": "attendance_waiver",
+    "department": "Civil Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "For an attendance waiver in Civil, email your Faculty Advisor first with the medical certificate attached, cc the HOD. FAs usually reply within 2 working days if you mention the course code clearly in the subject line."
+  },
+  {
+    "category": "Academic",
+    "subcategory": "attendance_waiver",
+    "department": "Computer Science and Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "CSE FAs want the medical certificate uploaded to the department portal, not just emailed. Do that first or your request sits unread. Follow up in person during office hours if no reply in 3 days."
+  },
+  {
+    "category": "Academic",
+    "subcategory": "grade_review",
+    "department": "Computer Science and Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "For grade review in CSE, first check whether you want the physical answer script (Mid-Sem, handled by the instructor directly) or a formal appeal (End-Sem, goes through the Academic Section with a fee). They are very different processes so pick the right one before emailing."
+  },
+  {
+    "category": "Academic",
+    "subcategory": "mid_sem_review",
+    "department": "Computer Science and Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "Mid-sem paper review is informal -- just ask the instructor during their office hours to show you the script. No form needed, no fee. Bring your ID card."
+  },
+  {
+    "category": "Academic",
+    "subcategory": "end_sem_appeal",
+    "department": "Computer Science and Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "End-sem grade appeals need the official form from the Academic Section, a small fee, and must be filed within 10 days of grades being published. It goes to a review committee, not just the instructor."
+  },
+  {
+    "category": "Academic",
+    "subcategory": "escalation",
+    "department": "Civil Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "If your FA is not replying, send one more email with '[Urgent]' in the subject and CC the HOD, then wait 48 hours. Most Civil HODs respond fast once CC'd -- going in person before that usually backfires."
+  },
+  {
+    "category": "Academic",
+    "subcategory": "escalation",
+    "department": "Electrical Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "EE HOD office hours fill up fast -- go 15 minutes before they open. Bring a printed copy of your original unanswered email as proof you tried the normal channel first."
+  },
+  {
+    "category": "Hostel",
+    "subcategory": "hostel_admin",
+    "department": "Mechanical Engineering",
+    "degree_program": "UG 4-Year B.Tech",
+    "summary": "Hostel room-change requests go through the Chief Warden's office, not the department. Submit the online form and follow up with the hostel office in person -- email alone is often ignored."
+  },
+  {
+    "category": "Academic",
+    "subcategory": "attendance_waiver",
+    "department": "Mechanical Engineering",
+    "degree_program": "UG-PG 5-Year Dual Degree",
+    "summary": "Dual-degree students need the FA AND the program coordinator to both sign off on an attendance waiver -- missing the coordinator's signature is the most common reason these get rejected."
+  }
+]

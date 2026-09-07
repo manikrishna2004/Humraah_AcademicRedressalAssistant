@@ -1,0 +1,1141 @@
+[
+  {
+    "id": "ex001",
+    "query": "I need an attendance waiver for Civil Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex002",
+    "query": "How do I request a waiver for my attendance shortfall? I'm in Civil Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex003",
+    "query": "My attendance is low and I need it excused - Civil Engineering student, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex004",
+    "query": "What's the process to get my attendance condoned? Civil Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex005",
+    "query": "I need an attendance waiver for Computer Science and Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex006",
+    "query": "How do I request a waiver for my attendance shortfall? I'm in Computer Science and Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex007",
+    "query": "My attendance is low and I need it excused - Computer Science and Engineering student, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex008",
+    "query": "What's the process to get my attendance condoned? Computer Science and Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex009",
+    "query": "I need an attendance waiver for Mechanical Engineering, UG-PG 5-Year Dual Degree.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex010",
+    "query": "How do I request a waiver for my attendance shortfall? I'm in Mechanical Engineering, UG-PG 5-Year Dual Degree.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex011",
+    "query": "My attendance is low and I need it excused - Mechanical Engineering student, UG-PG 5-Year Dual Degree.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex012",
+    "query": "What's the process to get my attendance condoned? Mechanical Engineering, UG-PG 5-Year Dual Degree.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex013",
+    "query": "I need an attendance waiver for Electrical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex014",
+    "query": "How do I request a waiver for my attendance shortfall? I'm in Electrical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex015",
+    "query": "My attendance is low and I need it excused - Electrical Engineering student, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex016",
+    "query": "What's the process to get my attendance condoned? Electrical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for attendance_waiver/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex017",
+    "query": "How can I see my mid-semester answer script in Computer Science and Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex018",
+    "query": "What's the process to check my midsem paper, Computer Science and Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex019",
+    "query": "Can I review my Mid Sem exam script with my professor? Computer Science and Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex020",
+    "query": "I want to look at my midterm answer sheet - Computer Science and Engineering student.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex021",
+    "query": "How can I see my mid-semester answer script in Civil Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex022",
+    "query": "What's the process to check my midsem paper, Civil Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex023",
+    "query": "Can I review my Mid Sem exam script with my professor? Civil Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex024",
+    "query": "I want to look at my midterm answer sheet - Civil Engineering student.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for mid_sem_review/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex025",
+    "query": "How do I file an end-semester grade appeal in Computer Science and Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex026",
+    "query": "What's the process for appealing my final grade, Computer Science and Engineering student?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex027",
+    "query": "I disagree with my semester grade and want to appeal - Computer Science and Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex028",
+    "query": "How do I submit a grade appeal form for Computer Science and Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex029",
+    "query": "How do I file an end-semester grade appeal in Mechanical Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex030",
+    "query": "What's the process for appealing my final grade, Mechanical Engineering student?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex031",
+    "query": "I disagree with my semester grade and want to appeal - Mechanical Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex032",
+    "query": "How do I submit a grade appeal form for Mechanical Engineering?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for end_sem_appeal/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex033",
+    "query": "How do I get a hostel room reallocation? Mechanical Engineering student.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex034",
+    "query": "I want to switch to a different hostel room - Mechanical Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex035",
+    "query": "Can I request a room change within my hostel? Mechanical Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex036",
+    "query": "My roommate situation isn't working out, can I move rooms? Mechanical Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex037",
+    "query": "How do I get a hostel room reallocation? Civil Engineering student.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex038",
+    "query": "I want to switch to a different hostel room - Civil Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex039",
+    "query": "Can I request a room change within my hostel? Civil Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex040",
+    "query": "My roommate situation isn't working out, can I move rooms? Civil Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex041",
+    "query": "How do I get a hostel room reallocation? Computer Science and Engineering student.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex042",
+    "query": "I want to switch to a different hostel room - Computer Science and Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex043",
+    "query": "Can I request a room change within my hostel? Computer Science and Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex044",
+    "query": "My roommate situation isn't working out, can I move rooms? Computer Science and Engineering.",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase-expansion probe for hostel_admin/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex045",
+    "query": "My FA is unresponsive, should I go to the HOD? Civil Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex046",
+    "query": "My faculty advisor hasn't replied to my last three emails. Civil Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex047",
+    "query": "It's been over a week and my advisor still hasn't responded - what should I do? Civil Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex048",
+    "query": "I don't think my advisor is going to reply - who else can I contact? Civil Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Civil Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex049",
+    "query": "My FA is unresponsive, should I go to the HOD? Electrical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex050",
+    "query": "My faculty advisor hasn't replied to my last three emails. Electrical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex051",
+    "query": "It's been over a week and my advisor still hasn't responded - what should I do? Electrical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex052",
+    "query": "I don't think my advisor is going to reply - who else can I contact? Electrical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Electrical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex053",
+    "query": "My FA is unresponsive, should I go to the HOD? Mechanical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex054",
+    "query": "My faculty advisor hasn't replied to my last three emails. Mechanical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex055",
+    "query": "It's been over a week and my advisor still hasn't responded - what should I do? Mechanical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex056",
+    "query": "I don't think my advisor is going to reply - who else can I contact? Mechanical Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Mechanical Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex057",
+    "query": "My FA is unresponsive, should I go to the HOD? Computer Science and Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex058",
+    "query": "My faculty advisor hasn't replied to my last three emails. Computer Science and Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex059",
+    "query": "It's been over a week and my advisor still hasn't responded - what should I do? Computer Science and Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex060",
+    "query": "I don't think my advisor is going to reply - who else can I contact? Computer Science and Engineering, UG 4-Year B.Tech.",
+    "resume_answers": [
+      "yes"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase-expansion probe for escalation/Computer Science and Engineering",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex061",
+    "query": "How do I apply for a grade review in Computer Science and Engineering?",
+    "resume_answers": [
+      "mid_sem_review"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Ambiguity probe (grade review), paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex062",
+    "query": "How do I apply for a grade review in Computer Science and Engineering?",
+    "resume_answers": [
+      "end_sem_appeal"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Ambiguity probe (grade review), paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex063",
+    "query": "I want my exam re-checked, what's the process in Computer Science and Engineering?",
+    "resume_answers": [
+      "mid_sem_review"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Ambiguity probe (grade review), paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex064",
+    "query": "I want my exam re-checked, what's the process in Computer Science and Engineering?",
+    "resume_answers": [
+      "end_sem_appeal"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Ambiguity probe (grade review), paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex065",
+    "query": "Can I get my paper re-evaluated in Computer Science and Engineering?",
+    "resume_answers": [
+      "mid_sem_review"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Ambiguity probe (grade review), paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex066",
+    "query": "Can I get my paper re-evaluated in Computer Science and Engineering?",
+    "resume_answers": [
+      "end_sem_appeal"
+    ],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Ambiguity probe (grade review), paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex067",
+    "query": "What's the weather like today?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "web_search",
+      "department": null,
+      "subcategory": null,
+      "gate_decision": "synthesize",
+      "top_tag": null,
+      "is_escalation": false
+    },
+    "note": "Out-of-domain probe",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex068",
+    "query": "Can you recommend a good movie to watch tonight?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "web_search",
+      "department": null,
+      "subcategory": null,
+      "gate_decision": "synthesize",
+      "top_tag": null,
+      "is_escalation": false
+    },
+    "note": "Out-of-domain probe",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex069",
+    "query": "What's the cricket score right now?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "web_search",
+      "department": null,
+      "subcategory": null,
+      "gate_decision": "synthesize",
+      "top_tag": null,
+      "is_escalation": false
+    },
+    "note": "Out-of-domain probe",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex070",
+    "query": "My advisor is ignoring my attendance waiver request.",
+    "resume_answers": [
+      {
+        "department": "Civil Engineering",
+        "degree_program": "UG 4-Year B.Tech"
+      }
+    ],
+    "expected": {
+      "route_decision": "clarify_1",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Missing-entity clarification probe, paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex071",
+    "query": "I want to request an attendance waiver but don't know who to contact.",
+    "resume_answers": [
+      {
+        "department": "Civil Engineering",
+        "degree_program": "UG 4-Year B.Tech"
+      }
+    ],
+    "expected": {
+      "route_decision": "clarify_1",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Missing-entity clarification probe, paraphrase variant",
+    "source": "paraphrase_expansion"
+  },
+  {
+    "id": "ex072",
+    "query": "Someone please help me with an attendance shortage issue.",
+    "resume_answers": [
+      {
+        "department": "Civil Engineering",
+        "degree_program": "UG 4-Year B.Tech"
+      }
+    ],
+    "expected": {
+      "route_decision": "clarify_1",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Missing-entity clarification probe, paraphrase variant",
+    "source": "paraphrase_expansion"
+  }
+]

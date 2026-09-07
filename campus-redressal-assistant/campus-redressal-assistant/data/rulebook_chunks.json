@@ -1,0 +1,27 @@
+[
+  {
+    "subcategory": "attendance_waiver",
+    "department": "General",
+    "text": "Clause 7.3 (Attendance): A student may be granted an attendance waiver for medical reasons on submission of a certificate from a registered medical practitioner to the Faculty Advisor within 5 working days of resuming classes, and countersigned by the Head of the Department."
+  },
+  {
+    "subcategory": "mid_sem_review",
+    "department": "General",
+    "text": "Clause 9.1 (Mid-Semester Evaluation): Students may request to view their evaluated Mid-Semester answer script directly from the course instructor during announced review hours. No formal application or fee is required for this informal review."
+  },
+  {
+    "subcategory": "end_sem_appeal",
+    "department": "General",
+    "text": "Clause 9.4 (End-Semester Grade Appeal): A formal grade appeal for an End-Semester examination must be submitted on Form AR-4 to the Academic Section within 10 calendar days of result declaration, accompanied by the prescribed fee. The appeal is reviewed by a three-member departmental committee."
+  },
+  {
+    "subcategory": "escalation",
+    "department": "General",
+    "text": "Clause 12.2 (Grievance Escalation): If a Faculty Advisor does not respond to a formal written request within 48 hours, the student may escalate the matter in writing to the Head of the Department, who is required to respond within 3 working days."
+  },
+  {
+    "subcategory": "hostel_admin",
+    "department": "General",
+    "text": "Hostel Manual Section 4: Room reallocation requests are processed solely by the Office of the Chief Warden via the official online portal. Requests submitted by email directly to hostel staff are not considered valid submissions."
+  }
+]

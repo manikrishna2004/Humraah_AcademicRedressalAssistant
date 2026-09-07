@@ -1,0 +1,230 @@
+[
+  {
+    "id": "tc01",
+    "query": "Room reallocation process for hostel, Mechanical Engineering",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Clean single path, no clarification needed."
+  },
+  {
+    "id": "tc02",
+    "query": "How do I get an attendance waiver in Computer Science and Engineering for a 4-year btech program",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Department + program both stated up front -- should skip Clarification Point 1."
+  },
+  {
+    "id": "tc03",
+    "query": "My advisor is ignoring my attendance waiver request.",
+    "resume_answers": [
+      {"department": "Civil Engineering", "degree_program": "UG 4-Year B.Tech"}
+    ],
+    "expected": {
+      "route_decision": "clarify_1",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "The architecture's own Clarification Point 1 worked example."
+  },
+  {
+    "id": "tc04",
+    "query": "How do I apply for a grade review in Computer Science and Engineering?",
+    "resume_answers": ["mid_sem_review"],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Genuine ambiguity between mid-sem review and end-sem appeal; user picks mid-sem."
+  },
+  {
+    "id": "tc05",
+    "query": "How do I apply for a grade review in Computer Science and Engineering?",
+    "resume_answers": ["end_sem_appeal"],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "clarify_2",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Same ambiguity, opposite branch -- checks the filter isn't hardcoded to one answer."
+  },
+  {
+    "id": "tc06",
+    "query": "My FA is unresponsive, should I go to the HOD? Mechanical Engineering, UG 4-year",
+    "resume_answers": ["yes"],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "The architecture's own Clarification Point 3 worked example, formal email already sent."
+  },
+  {
+    "id": "tc07",
+    "query": "My FA is unresponsive, should I go to the HOD? Mechanical Engineering, UG 4-year",
+    "resume_answers": ["no"],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Same escalation query, opposite branch -- formal email not yet sent."
+  },
+  {
+    "id": "tc08",
+    "query": "What is the weather like today?",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "web_search",
+      "department": null,
+      "subcategory": null,
+      "gate_decision": "synthesize",
+      "top_tag": null,
+      "is_escalation": false
+    },
+    "note": "Fully out-of-domain -- gated web search should be enough to clear the confidence threshold."
+  },
+  {
+    "id": "tc09",
+    "query": "Hostel mess complaint, Civil Engineering",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Civil Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Coverage probe: sample senior-experience data only has a hostel_admin entry for Mechanical, not Civil. Tests whether the rulebook's General fallback alone is enough."
+  },
+  {
+    "id": "tc10",
+    "query": "Grade review process for Mechanical Engineering, UG 4 year",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "grade_review",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Coverage probe: sample senior-experience grade_review/mid_sem/end_sem entries only exist for CSE, not Mechanical."
+  },
+  {
+    "id": "tc11",
+    "query": "My advisor isn't responding to my emails, Electrical Engineering, UG 4-year",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Electrical Engineering",
+      "subcategory": "escalation",
+      "gate_decision": "clarify_3",
+      "top_tag": "escalation",
+      "is_escalation": true
+    },
+    "note": "Paraphrase probe: 'isn't responding' instead of 'unresponsive'/'ignoring'/'escalate'. Tests MockLLM's keyword-regex robustness to phrasing (a real Ollama backend should handle this via semantic understanding)."
+  },
+  {
+    "id": "tc12",
+    "query": "The room in my dorm needs to be changed, I'm in Mechanical Engineering",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "hostel_admin",
+      "gate_decision": "synthesize",
+      "top_tag": "hostel_admin",
+      "is_escalation": false
+    },
+    "note": "Paraphrase probe: 'dorm' instead of 'hostel'/'room allotment'/'mess'. Same robustness concern as tc11."
+  },
+  {
+    "id": "tc13",
+    "query": "Need an attendance waiver, I'm in Civil Engineering",
+    "resume_answers": [
+      {"degree_program": "UG 4-Year B.Tech"}
+    ],
+    "expected": {
+      "route_decision": "clarify_1",
+      "department": "Civil Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Partial clarification: department given, only degree_program missing."
+  },
+  {
+    "id": "tc14",
+    "query": "Mid-sem paper review process in Computer Science and Engineering",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "mid_sem_review",
+      "gate_decision": "synthesize",
+      "top_tag": "mid_sem_review",
+      "is_escalation": false
+    },
+    "note": "Unambiguous variant of tc04's topic -- query itself names the specific procedure."
+  },
+  {
+    "id": "tc15",
+    "query": "End semester grade appeal form, Computer Science and Engineering",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Computer Science and Engineering",
+      "subcategory": "end_sem_appeal",
+      "gate_decision": "synthesize",
+      "top_tag": "end_sem_appeal",
+      "is_escalation": false
+    },
+    "note": "Unambiguous variant of tc05's topic."
+  },
+  {
+    "id": "tc16",
+    "query": "Attendance waiver process for a dual degree Mechanical Engineering student",
+    "resume_answers": [],
+    "expected": {
+      "route_decision": "retrieve",
+      "department": "Mechanical Engineering",
+      "subcategory": "attendance_waiver",
+      "gate_decision": "synthesize",
+      "top_tag": "attendance_waiver",
+      "is_escalation": false
+    },
+    "note": "Checks 'dual degree' phrase maps to UG-PG 5-Year Dual Degree, and the dual-degree-specific senior note is surfaced."
+  }
+]

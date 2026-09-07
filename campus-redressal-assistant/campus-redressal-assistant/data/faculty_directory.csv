@@ -1,0 +1,11 @@
+name,role,department,email,office,office_hours
+Dr. A. Sharma,HOD,Computer Science and Engineering,hod.cse@example.edu,CSE Building Room 214,Mon-Fri 3:00-4:00 PM
+Dr. R. Iyer,Faculty Advisor,Computer Science and Engineering,fa.cse.batch2024@example.edu,CSE Building Room 108,Tue/Thu 2:00-3:00 PM
+Dr. P. Nair,HOD,Electrical Engineering,hod.ee@example.edu,EE Building Room 301,Mon-Fri 4:00-5:00 PM
+Dr. S. Verma,Faculty Advisor,Electrical Engineering,fa.ee.batch2024@example.edu,EE Building Room 112,Wed 11:00 AM-12:00 PM
+Dr. K. Reddy,HOD,Mechanical Engineering,hod.me@example.edu,ME Building Room 210,Mon/Wed/Fri 3:00-4:00 PM
+Dr. M. Joshi,Faculty Advisor,Mechanical Engineering,fa.me.batch2024@example.edu,ME Building Room 118,Tue 2:00-3:00 PM
+Dr. T. Banerjee,HOD,Civil Engineering,hod.civil@example.edu,Civil Building Room 205,Mon-Fri 3:30-4:30 PM
+Dr. N. Das,Faculty Advisor,Civil Engineering,fa.civil.batch2024@example.edu,Civil Building Room 101,Thu 11:00 AM-12:00 PM
+Dr. V. Rao,HOD,Chemical Engineering,hod.chem@example.edu,Chem Building Room 220,Mon-Fri 2:30-3:30 PM
+Dr. L. Menon,Faculty Advisor,Chemical Engineering,fa.chem.batch2024@example.edu,Chem Building Room 115,Wed 3:00-4:00 PM
