@@ -43,10 +43,9 @@ def export_plans():
     templates = []
     template_ids = {}
     index = {}
-    issues = [tag for tag in ISSUES if tag != "grade_review"]
 
     for mode, tag, dept, program in itertools.product(
-        rules, issues, ("", *DEPARTMENTS), ("", *DEGREE_PROGRAMS),
+        rules, ISSUES, ("", *DEPARTMENTS), ("", *DEGREE_PROGRAMS),
     ):
         selected_rules = [
             hit for hit in rules[mode]

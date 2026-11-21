@@ -36,7 +36,7 @@ class StartRequest(BaseModel):
 
 
 class PlanRequest(StartRequest):
-    tag: Literal["supplementary_exam", "mid_sem_review", "end_sem_appeal", "attendance_waiver", "escalation"] | None
+    tag: Literal["supplementary_exam", "grade_review", "mid_sem_review", "end_sem_appeal", "attendance_waiver", "escalation"] | None
     department: str | None = None
     degree_program: str | None = None
     sent: bool | None = None

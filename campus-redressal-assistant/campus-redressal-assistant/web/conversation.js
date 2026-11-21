@@ -8,7 +8,7 @@ const ISSUE_CHOICES = [
 const GRADE_CHOICES = [
   ["mid_sem_review", "See my mid-sem answer script"],
   ["end_sem_appeal", "Raise an end-sem grade concern"],
-  ["other", "I’m not sure"],
+  ["grade_review", "I’m not sure"],
 ];
 const ADVISOR_CHOICES = [["yes", "Yes, already emailed"], ["no", "Not yet"], ["unknown", "I’m not sure"]];
 
@@ -18,7 +18,7 @@ export function createConversation(intake) {
   const outOfDomain = new RegExp(intake.outOfDomain, "i");
   const sampleDepartments = new Set(intake.departments);
   const campusTopicNames = new Set(ISSUE_CHOICES.map(([key]) => key));
-  const gradeHint = /\b(?:marks|grade|answer script|recheck|marking)\b/i;
+  const gradeHint = /\b(?:marks?|grades?|answer script|recheck|marking)\b/i;
   const advisorHint = /(?:faculty advisor|\bhod\b).{0,45}(?:reply|repli|respond|reached|ignor|answer)|unresponsive/i;
 
   function classify(query) {
@@ -58,6 +58,7 @@ export function createConversation(intake) {
       topic,
       tag: topic && campusTopicNames.has(topic) ? topic : state.tag,
       turns: 0,
+      gradeAnswered: false,
       advisorAnswered: state.sent !== null,
       departmentAnswered: state.department !== null,
     };
@@ -66,7 +67,7 @@ export function createConversation(intake) {
   function question(state) {
     if (state.turns >= 2 || state.tag === "other") return null;
     if (!state.tag) return { key: "tag", text: "What is the issue about?", choices: ISSUE_CHOICES };
-    if (state.tag === "grade_review") {
+    if (state.tag === "grade_review" && !state.gradeAnswered) {
       return { key: "tag", text: "What are you trying to do about your grade?", choices: GRADE_CHOICES };
     }
     if (state.tag === "escalation" && !state.advisorAnswered) {
@@ -95,7 +96,10 @@ export function createConversation(intake) {
   function answer(state, prompt, value) {
     if (!prompt?.choices.some(([key]) => key === value)) throw new Error("Choose one of the available answers.");
     const updated = { ...state, turns: state.turns + 1 };
-    if (prompt.key === "tag") updated.tag = value;
+    if (prompt.key === "tag") {
+      updated.tag = value;
+      updated.gradeAnswered = state.tag === "grade_review";
+    }
     if (prompt.key === "sent") {
       updated.sent = value === "unknown" ? null : value === "yes";
       updated.advisorAnswered = true;
@@ -111,7 +115,7 @@ export function createConversation(intake) {
     const { query, mode, tag, department, degree_program, sent } = state;
     return {
       query, mode, department, degree_program, sent,
-      tag: tag && tag !== "other" && tag !== "grade_review" ? tag : null,
+      tag: tag && tag !== "other" ? tag : null,
     };
   }
 

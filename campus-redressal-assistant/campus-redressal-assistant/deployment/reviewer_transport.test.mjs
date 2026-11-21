@@ -28,8 +28,12 @@ test("vague academic intake asks the issue, then clarifies grades with no depart
 test("an identified marks concern asks about the procedure", () => {
   const state = start("My marks look wrong.");
   assert.deepEqual(engine.question(state).choices.map(([id]) => id), [
-    "mid_sem_review", "end_sem_appeal", "other",
+    "mid_sem_review", "end_sem_appeal", "grade_review",
   ]);
+  const unsure = answer(state, "grade_review");
+  assert.equal(engine.question(unsure), null);
+  assert.equal(plan(unsure).contacts[0].role, "Course instructor");
+  assert.match(engine.question(start("My grades look wrong.")).text, /about your grade/);
 });
 
 test("a supplementary deadline goes straight to the cited plan", () => {

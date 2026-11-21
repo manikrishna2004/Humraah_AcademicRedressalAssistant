@@ -15,6 +15,10 @@ NEXT_STEPS = {
         "Check the supplementary exam notice in ERP. If the application window has closed, "
         "ask the Academic Section whether late registration is available for your batch."
     ),
+    "grade_review": (
+        "Ask your instructor to explain the grade or mark you’re concerned about. Include the course code "
+        "and which assessment you mean. They can confirm whether viewing the script or requesting a review applies."
+    ),
     "mid_sem_review": (
         "Ask the course instructor when you can view your evaluated answer script. "
         "Include the course code and the exam date."
@@ -31,6 +35,7 @@ NEXT_STEPS = {
 
 PRIMARY_CONTACTS = {
     "supplementary_exam": ("Academic Section · UG", "View the institute’s Academic Section listing.", f"{HANDBOOK}#page=8"),
+    "grade_review": ("Course instructor", "Find your instructor through your department.", ACADEMICS),
     "mid_sem_review": ("Course instructor", "Look up your instructor in ERP or through your department.", ACADEMICS),
     "end_sem_appeal": ("Course instructor", "Start with the person responsible for the course.", ACADEMICS),
     "attendance_waiver": ("Faculty advisor", "Find your assigned advisor in ERP and confirm the relevant procedure.", ERP),
