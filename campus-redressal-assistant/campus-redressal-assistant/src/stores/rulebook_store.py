@@ -49,14 +49,18 @@ def _collection():
     )
 
 
-def load_json(path: str | Path) -> None:
+def load_json(path: str | Path, *additional_paths: str | Path) -> None:
     """
     Ingest data/rulebook_chunks.json -- a list of objects shaped like:
         {"subcategory": "...", "department": "...", "text": "..."}
     Builds both the Chroma dense index and a parallel BM25 index (pickled
     alongside the Chroma persistence dir so both stay in sync).
     """
-    entries: list[dict[str, Any]] = json.loads(Path(path).read_text(encoding="utf-8"))
+    entries: list[dict[str, Any]] = [
+        entry
+        for source in (path, *additional_paths)
+        for entry in json.loads(Path(source).read_text(encoding="utf-8"))
+    ]
     col = _collection()
 
     ids = [f"rule-{i}" for i in range(len(entries))]
@@ -65,11 +69,15 @@ def load_json(path: str | Path) -> None:
         {
             "subcategory": e.get("subcategory", ""),
             "department": e.get("department", "General"),
+            "dataset": e.get("dataset", "sample"),
+            "source_label": e.get("source_label", ""),
+            "source_url": e.get("source_url", ""),
+            "policy_difference": e.get("policy_difference", ""),
         }
         for e in entries
     ]
 
-    existing = col.get(ids=ids)
+    existing = col.get(include=[])
     if existing["ids"]:
         col.delete(ids=existing["ids"])
     col.add(ids=ids, documents=documents, metadatas=metadatas)
@@ -103,6 +111,9 @@ def query_rulebook(
     query: str,
     department: str | None = None,
     top_k: int = 5,
+    *,
+    tags: tuple[str, ...] = (),
+    dataset: str | None = None,
 ) -> list[dict]:
     """
     RRF fuses the dense and sparse *rankings* to decide which chunks to
@@ -117,7 +128,14 @@ def query_rulebook(
     """
     # -- dense branch --
     col = _collection()
-    where = {"department": {"$in": [department, "General"]}} if department else None
+    filters = []
+    if department:
+        filters.append({"department": {"$in": [department, "General"]}})
+    if tags:
+        filters.append({"subcategory": {"$in": list(tags)}})
+    if dataset:
+        filters.append({"dataset": dataset})
+    where = {"$and": filters} if len(filters) > 1 else (filters[0] if filters else None)
     dense_result = col.query(query_texts=[query], n_results=top_k, where=where)
     dense_ids = dense_result["ids"][0] if dense_result["ids"] else []
 
@@ -140,17 +158,26 @@ def query_rulebook(
     if bm25_data is not None:
         bm25: BM25Okapi = bm25_data["bm25"]
         all_ids = bm25_data["ids"]
+        matches = [
+            (doc_id, index)
+            for index, (doc_id, meta) in enumerate(zip(all_ids, bm25_data["metadatas"]))
+            if (not department or meta.get("department") in (department, "General"))
+            and (not tags or meta.get("subcategory") in tags)
+            and (not dataset or meta.get("dataset") == dataset)
+        ]
         raw_scores = [float(s) for s in bm25.get_scores(_tokenize(query))]
-        max_raw = max(raw_scores) if raw_scores else 0.0
+        eligible_scores = (raw_scores[index] for _, index in matches) if dataset else raw_scores
+        max_raw = max(eligible_scores, default=0.0)
 
-        ranked = sorted(zip(all_ids, raw_scores), key=lambda x: x[1], reverse=True)
+        ranked = sorted(
+            ((doc_id, raw_scores[index]) for doc_id, index in matches),
+            key=lambda item: item[1],
+            reverse=True,
+        )
         for doc_id, doc, meta in zip(all_ids, bm25_data["documents"], bm25_data["metadatas"]):
             doc_lookup.setdefault(doc_id, {"text": doc, "metadata": meta})
 
         for doc_id, raw in ranked:
-            meta = doc_lookup.get(doc_id, {}).get("metadata", {})
-            if department and meta.get("department") not in (department, "General"):
-                continue  # keep department filtering consistent with the dense branch
             sparse_ids.append(doc_id)
             bm25_normalized[doc_id] = float(raw / max_raw) if max_raw > 0 else 0.0
         sparse_ids = sparse_ids[:top_k]
@@ -171,6 +198,7 @@ def query_rulebook(
                 "tag": info["metadata"].get("subcategory", ""),
                 "score": round(magnitude, 4),
                 "metadata": info["metadata"],
+                "source_id": doc_id,
             }
         )
     return hits

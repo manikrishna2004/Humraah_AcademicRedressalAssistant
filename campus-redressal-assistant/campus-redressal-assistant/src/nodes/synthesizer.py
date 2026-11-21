@@ -11,6 +11,7 @@ LLM_BACKEND=ollama -> the same context bundle is handed to the local model
 """
 from __future__ import annotations
 
+from src.academic_plan import academic_plan
 from src.llm import get_llm
 from src.state import RedressalState
 
@@ -163,6 +164,8 @@ def render_markdown(bundle: dict) -> str:
 
 
 def synthesizer_node(state: RedressalState) -> dict:
+    if state.get("academic_mode"):
+        return {"action_plan": academic_plan(state)}
     llm = get_llm()
     bundle = _build_context_bundle(state)
     prompt = _build_prompt(bundle)

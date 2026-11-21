@@ -43,6 +43,7 @@ def load_json(path: str | Path) -> None:
             "subcategory": e.get("subcategory", ""),
             "department": e.get("department", ""),
             "degree_program": e.get("degree_program", ""),
+            "policy_difference": e.get("policy_difference", ""),
         }
         for e in entries
     ]
@@ -58,9 +59,19 @@ def query_senior_experience(
     query: str,
     department: str | None = None,
     top_k: int = 5,
+    *,
+    tags: tuple[str, ...] = (),
+    program: str | None = None,
 ) -> list[dict]:
     col = _collection()
-    where = {"department": department} if department else None
+    filters = []
+    if department:
+        filters.append({"department": department})
+    if tags:
+        filters.append({"subcategory": {"$in": list(tags)}})
+    if program:
+        filters.append({"degree_program": program})
+    where = {"$and": filters} if len(filters) > 1 else (filters[0] if filters else None)
 
     result = col.query(
         query_texts=[query],
@@ -71,8 +82,8 @@ def query_senior_experience(
         return []
 
     hits = []
-    for doc, meta, distance in zip(
-        result["documents"][0], result["metadatas"][0], result["distances"][0]
+    for doc_id, doc, meta, distance in zip(
+        result["ids"][0], result["documents"][0], result["metadatas"][0], result["distances"][0]
     ):
         # Chroma cosine space: distance = 1 - cosine_similarity
         similarity = max(0.0, 1.0 - float(distance))
@@ -82,6 +93,7 @@ def query_senior_experience(
                 "tag": meta.get("subcategory", ""),
                 "score": round(similarity, 4),
                 "metadata": meta,
+                "source_id": doc_id,
             }
         )
     return hits

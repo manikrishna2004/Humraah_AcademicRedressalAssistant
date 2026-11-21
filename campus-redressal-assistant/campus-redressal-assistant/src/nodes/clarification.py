@@ -63,6 +63,8 @@ def clarification_2_node(state: RedressalState) -> dict:
         f"I found more than one matching procedure: {', '.join(routes)}. "
         "Which one matches what you need?"
     )
+    if state.get("academic_mode"):
+        question = "Which grade concern are you trying to resolve?"
 
     chosen = interrupt(
         {
@@ -76,6 +78,12 @@ def clarification_2_node(state: RedressalState) -> dict:
         h for h in state.get("retrieved_senior_fundae", []) if h.get("tag") == chosen
     ]
     filtered_rules = [h for h in state.get("retrieved_rules", []) if h.get("tag") == chosen]
+    if state.get("academic_mode"):
+        return {
+            "ambiguity_resolved": chosen,
+            "retrieved_senior_fundae": filtered_senior,
+            "retrieved_rules": filtered_rules,
+        }
 
     return {
         "ambiguity_resolved": chosen,
@@ -98,6 +106,8 @@ def clarification_3_node(state: RedressalState) -> dict:
         "waited 48 hours? If yes, I'll give you the HOD escalation steps; "
         "if not, here's the initial email template to send first."
     )
+    if state.get("academic_mode") == "campus":
+        question = "Have you already emailed your faculty advisor about this issue?"
 
     sent = interrupt(
         {

@@ -36,6 +36,8 @@ DEGREE_PROGRAMS = [
 
 # subcategory tags used later for ambiguity detection in the confidence gate
 INTENT_RULES: list[tuple[re.Pattern, dict[str, Any]]] = [
+    (re.compile(r"\bsupplementary exam", re.I),
+     {"category": "Academic", "subcategory": "supplementary_exam"}),
     (re.compile(r"attendance|waiver|shortage", re.I),
      {"category": "Academic", "subcategory": "attendance_waiver"}),
     (re.compile(r"grade review|revaluat|remarking", re.I),
@@ -44,9 +46,9 @@ INTENT_RULES: list[tuple[re.Pattern, dict[str, Any]]] = [
      {"category": "Academic", "subcategory": "mid_sem_review"}),
     (re.compile(r"end.?sem|grade appeal", re.I),
      {"category": "Academic", "subcategory": "end_sem_appeal"}),
-    (re.compile(r"hostel|room allotment|mess", re.I),
+    (re.compile(r"hostel|room allotment|\bmess\b", re.I),
      {"category": "Hostel", "subcategory": "hostel_admin"}),
-    (re.compile(r"fa\b|faculty advisor|hod\b|unresponsive|ignoring|escalat", re.I),
+    (re.compile(r"\bfa\b|faculty advisor|\bhod\b|unresponsive|ignoring|escalat", re.I),
      {"category": "Academic", "subcategory": "escalation"}),
 ]
 
@@ -97,7 +99,7 @@ class MockLLM:
         # escalation, grade review, attendance). Directory-only lookups still
         # need it to disambiguate which HOD/FA to point to.
         if not out_of_domain and category is not None:
-            if department is None:
+            if department is None and subcategory != "supplementary_exam":
                 missing_fields.append("department")
             if degree_program is None and subcategory in {"attendance_waiver", "escalation"}:
                 missing_fields.append("degree_program")

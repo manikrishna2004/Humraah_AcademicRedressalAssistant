@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Find the next step for an academic issue at IIT Kharagpur.">
+  <meta name="theme-color" content="#f8f7fc">
+  <title>Humraah · Campus academic help</title>
+  <link rel="stylesheet" href="/style.css">
+  <script type="module" src="/app.js"></script>
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell header-content">
+      <a class="brand" href="/" aria-label="Humraah home"><span class="brand-symbol" aria-hidden="true">H</span>Humraah</a>
+      <button class="text-button" type="button" id="how-button">How it works</button>
+    </div>
+  </header>
+  <main class="shell">
+    <section class="hero" aria-labelledby="page-title">
+      <div class="hero-text">
+        <p class="eyebrow">IIT Kharagpur · Academic help</p>
+        <h1 id="page-title">Find your<br class="hero-break"> next step.</h1>
+        <p>Describe your academic issue to see which rule applies and who can help.</p>
+      </div>
+      <div class="hero-art" aria-hidden="true">
+        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
+        <div class="orbit orbit-four"></div><div class="orbit-point point-one"></div><div class="orbit-point point-two"></div>
+        <div class="orbit-point point-three"></div><div class="orbit-core"><div></div></div>
+      </div>
+    </section>
+
+    <section class="main-area" aria-label="Find academic guidance">
+      <div class="workspace">
+        <div class="section-heading">
+          <h2 id="question-title">What happened?</h2>
+          <button class="text-button" id="reset" type="button" hidden>New question</button>
+        </div>
+        <fieldset class="mode-picker" id="mode-picker">
+          <legend class="sr-only">Source mode</legend>
+          <label><input name="mode" type="radio" value="campus" checked><span>Campus sources</span></label>
+          <label><input name="mode" type="radio" value="sample"><span>Sample mode</span></label>
+        </fieldset>
+        <p id="mode-note" class="mode-note">Pilot coverage varies by issue and admission batch.</p>
+        <form id="query-form">
+          <label class="sr-only" for="query">Describe your academic issue</label>
+          <textarea id="query" name="query" maxlength="700" minlength="3" required rows="3" placeholder="e.g. I missed the suppli form deadline. What can I do?"></textarea>
+          <div class="form-footer">
+            <span class="helper">Leave out names and roll numbers.</span>
+            <button class="primary" type="submit" id="submit">Find my next step</button>
+          </div>
+        </form>
+        <p id="status" role="status" class="status" hidden></p>
+        <div id="guidance" aria-live="polite"></div>
+      </div>
+
+      <aside class="topics" aria-labelledby="topics-title">
+        <h2 id="topics-title">Start with a topic</h2>
+        <p>Pick a common situation and make it your own.</p>
+        <div id="topic-list" class="topic-list"></div>
+      </aside>
+    </section>
+  </main>
+  <footer class="shell footer"><p>Humraah is a student-built pilot. Confirm time-sensitive steps with your institute.</p></footer>
+
+  <dialog id="how-dialog" aria-labelledby="how-title">
+    <h2 id="how-title">How Humraah works</h2>
+    <p>Type your issue or choose a guided topic. Humraah may ask for your department, program, or what you have already tried.</p>
+    <p><strong>Campus sources</strong> links to IIT Kharagpur documents where the pilot has coverage. <strong>Sample mode</strong> uses fictional rulebook, senior, and directory entries to demonstrate the workflow.</p>
+    <form method="dialog"><button class="primary">Got it</button></form>
+  </dialog>
+</body>
+</html>

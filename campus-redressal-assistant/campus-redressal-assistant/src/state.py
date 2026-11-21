@@ -23,9 +23,10 @@ class RetrievedChunk(TypedDict, total=False):
     tag: str  # subcategory / procedure tag, used for ambiguity detection
     score: float
     metadata: dict
+    source_id: str
 
 
-RouteDecision = Literal["clarify_1", "web_search", "retrieve"]
+RouteDecision = Literal["clarify_1", "web_search", "retrieve", "unsupported"]
 GateDecision = Literal["synthesize", "clarify_2", "clarify_3"]
 
 
@@ -34,6 +35,7 @@ class RedressalState(TypedDict, total=False):
     user_query: str
     session_history: list[dict[str, str]]
     turn_count: int
+    academic_mode: Literal["campus", "sample"]
 
     # --- Node 1: intent classification ---
     category: Optional[str]
@@ -64,3 +66,4 @@ class RedressalState(TypedDict, total=False):
 
     # --- Node 3: synthesis ---
     final_response: Optional[str]
+    action_plan: dict[str, Any]

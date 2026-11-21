@@ -55,6 +55,15 @@ def confidence_gate_node(state: RedressalState) -> dict:
     if state.get("subcategory") == "escalation" and state.get("formal_email_sent") is None:
         return {"confidence_score": round(knowledge_score, 4), "gate_decision": "clarify_3"}
 
+    if state.get("academic_mode"):
+        if state.get("subcategory") == "grade_review":
+            return {
+                "confidence_score": round(knowledge_score, 4),
+                "gate_decision": "clarify_2",
+                "ambiguous_routes": ["mid_sem_review", "end_sem_appeal"],
+            }
+        return {"confidence_score": round(knowledge_score, 4), "gate_decision": "synthesize"}
+
     # --- Clarification Point 2: two or more distinct, genuinely-competitive
     # procedural tags near the top.
     near_top_tags = {

@@ -15,6 +15,42 @@ in the pipeline where the missing information actually matters -- then
 **resumes execution from that exact point** instead of restarting the
 whole pipeline.
 
+## Humraah browser MVP
+
+From the repository root, run these commands with Python 3.11 or later:
+
+```bash
+cd campus-redressal-assistant/campus-redressal-assistant
+python -m venv .venv
+. .venv/bin/activate
+python -m pip install -r requirements-web.txt
+python scripts/run_web.py
+```
+
+Open **http://127.0.0.1:8000**. The default web run uses the existing
+LangGraph workflow, local ChromaDB and SQLite, and the deterministic mock
+model. It builds its indexes at startup without an API key or Ollama.
+
+- **Campus sources** covers supplementary exams, grade reviews, attendance
+  questions and advisor follow-ups. It links to IIT Kharagpur's handbook and
+  published guidance. Some grade rules apply only to admissions through
+  2023, as the citations indicate. Confirm current deadlines and cohort
+  rules with the institute. Verified peer accounts are still pending.
+- **Sample mode** uses the repository's fictional policy, peer and directory
+  records. To try a source discrepancy, ask about an attendance waiver,
+  then pick Computer Science and Engineering and UG 4-Year B.Tech.
+- The web flow resumes each follow-up on the same LangGraph thread. It keeps
+  pending answers in memory for up to 20 minutes and clears completed
+  threads. Keep the server at one worker for the MVP. The browser restricts
+  lookup to the selected source mode.
+
+The tests in `tests/test_web_mvp.py` verify expected answers, citations,
+clarification choices and fallback behavior through the browser API. They use
+separate queries from the indexed source documents. Run them alongside the
+original graph checks with `python -m pytest -q` after installing
+`requirements-web.txt` and `pytest`. The 16-query CLI eval remains available
+through `scripts/evaluate.py`.
+
 ## Why this exists
 
 Most "RAG chatbot" demos retrieve-then-generate in one shot. Real

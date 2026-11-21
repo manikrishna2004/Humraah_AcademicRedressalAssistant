@@ -1,0 +1,59 @@
+[
+  {
+    "subcategory": "supplementary_exam",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "Faculty Advisor Handbook · Supplementary Examination, items 1, 9, 10 and 17",
+    "source_url": "https://student.iitkgp.ac.in/docs/STUDENTCOPY_FACULTYADVISOR_IITKGP.pdf#page=20",
+    "policy_difference": "The handbook lists a countersignature in item 9 and says in item 17 that routine ERP registration no longer requires teacher or HOD approval. Check the latest ERP notice and ask the Academic Section which instructions apply to your case.",
+    "text": "The 2026 handbook describes supplementary exams in both semesters. It points students to the Academic Calendar or a separate notification for exam dates and describes online application through ERP."
+  },
+  {
+    "subcategory": "supplementary_exam",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "IIT Kharagpur ERP Section · Supplementary and Summer Quarter",
+    "source_url": "https://www.iitkgp.ac.in/sop_erp.htm",
+    "text": "The institute lists supplementary exam registration, applications, and fee handling as online ERP workflows. Check the latest institute notification for the actual application window and confirm eligibility for your admission batch."
+  },
+  {
+    "subcategory": "supplementary_exam",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "UG Rules and Regulations · §28.13 (admissions through 2023)",
+    "source_url": "https://www.iitkgp.ac.in/assets/pdf/stu_ad.pdf#page=38",
+    "text": "For the cohorts covered by this edition, supplementary examination registration is through ERP. Section 28.13 removes teacher or HOD sign-off for routine registration. Ask the Academic Section to confirm the rules for your batch and any late-registration options."
+  },
+  {
+    "subcategory": "mid_sem_review",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "UG Rules and Regulations · §30.1.3 (admissions through 2023)",
+    "source_url": "https://www.iitkgp.ac.in/assets/pdf/stu_ad.pdf#page=40",
+    "text": "This edition says students should be shown their evaluated mid-semester answer scripts within 20 days of the last mid-semester exam date. Confirm the current rule and viewing schedule for your course with your instructor."
+  },
+  {
+    "subcategory": "end_sem_appeal",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "UG Rules and Regulations · §30.2 (admissions through 2023)",
+    "source_url": "https://www.iitkgp.ac.in/assets/pdf/stu_ad.pdf#page=40",
+    "text": "This edition describes grade revision after the instructor identifies a genuine error. Ask the instructor to verify the discrepancy and confirm with the Academic Section which procedure and deadline apply to your admission batch."
+  },
+  {
+    "subcategory": "escalation",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "Faculty Advisor Handbook · Faculty Advisors",
+    "source_url": "https://student.iitkgp.ac.in/docs/STUDENTCOPY_FACULTYADVISOR_IITKGP.pdf#page=36",
+    "text": "The handbook describes the department’s batch-assigned faculty advisor as the contact for academic guidance throughout coursework. The official handbook lists advisors by department, degree and year."
+  },
+  {
+    "subcategory": "attendance_waiver",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "Faculty Advisor Handbook · Medical Leave (UG, PG)",
+    "source_url": "https://student.iitkgp.ac.in/docs/STUDENTCOPY_FACULTYADVISOR_IITKGP.pdf#page=22",
+    "text": "The handbook documents medical-leave workflows. Ask your faculty advisor whether the medical-leave process is relevant to your attendance issue and which documents your department needs."
+  }
+]

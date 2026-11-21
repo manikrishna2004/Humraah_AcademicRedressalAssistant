@@ -8,15 +8,21 @@ straight to retrieval.
 """
 from __future__ import annotations
 
+from src.academic_intake import normalize_query, validate_intent
 from src.llm import get_llm
 from src.state import RedressalState
 
 
 def intent_classifier_node(state: RedressalState) -> dict:
     llm = get_llm()
+    academic_mode = state.get("academic_mode")
+    query = state["user_query"]
     result = llm.classify_intent(
-        query=state["user_query"], history=state.get("session_history", [])
+        query=normalize_query(query) if academic_mode else query,
+        history=state.get("session_history", []),
     )
+    if academic_mode:
+        result = validate_intent(result)
 
     missing_fields = result.get("missing_fields", [])
     out_of_domain = result.get("out_of_domain", False)
@@ -24,7 +30,7 @@ def intent_classifier_node(state: RedressalState) -> dict:
     if missing_fields:
         route_decision = "clarify_1"
     elif out_of_domain:
-        route_decision = "web_search"
+        route_decision = "unsupported" if academic_mode else "web_search"
     else:
         route_decision = "retrieve"
 

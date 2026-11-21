@@ -1,25 +1,18 @@
-# --- Core orchestration ---
-langgraph>=0.2.60
+-r requirements-web.txt
+
+# --- Core orchestration extras ---
 langgraph-checkpoint-sqlite>=2.0.0
 
 # --- LLM runtime (production mode) ---
 ollama>=0.4.4
 
-# --- Vector store ---
-chromadb>=0.5.20
-
 # --- Embeddings (production mode) ---
 sentence-transformers>=3.3.1
-
-# --- Hybrid (BM25) search for the rulebook store ---
-rank-bm25>=0.2.2
 
 # --- Web search fallback (gated, no API key required) ---
 duckduckgo-search>=6.3.0
 
 # --- Utilities ---
-python-dotenv>=1.0.1
-pydantic>=2.9.0
 rich>=13.9.0
 
 # --- Testing ---

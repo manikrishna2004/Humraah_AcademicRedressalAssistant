@@ -64,6 +64,7 @@ def build_graph(checkpointer=None):
             "clarify_1": "clarification_1",
             "web_search": "web_search",
             "retrieve": "retriever",
+            "unsupported": "synthesizer",
         },
     )
 
