@@ -15,7 +15,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
-from src.academic_intake import ISSUES, SCENARIOS
+from src.academic_intake import ISSUES, browser_intake
 from src.graph import build_graph
 from src.llm import DEGREE_PROGRAMS, DEPARTMENTS
 from src.stores import directory_store, rulebook_store, senior_experience_store
@@ -33,6 +33,13 @@ class StartRequest(BaseModel):
     model_config = ConfigDict(extra="forbid")
     query: Annotated[str, StringConstraints(strip_whitespace=True, min_length=3, max_length=700)]
     mode: MODE = "campus"
+
+
+class PlanRequest(StartRequest):
+    tag: Literal["supplementary_exam", "mid_sem_review", "end_sem_appeal", "attendance_waiver", "escalation"] | None
+    department: str | None = None
+    degree_program: str | None = None
+    sent: bool | None = None
 
 
 class ResumeRequest(BaseModel):
@@ -74,7 +81,7 @@ async def prevent_session_caching(request, call_next):
 
 @app.get("/api/options")
 def options():
-    return {"scenarios": [{**scenario, "label": ISSUES[scenario["tag"]]} for scenario in SCENARIOS]}
+    return browser_intake()
 
 
 async def forget(thread_id: str) -> None:
@@ -114,6 +121,29 @@ async def advance(thread_id: str, pending: Pending, graph_input: dict | Command)
 
     await forget(thread_id)
     return {"kind": "plan", **result["action_plan"]}
+
+
+@app.post("/api/plan")
+async def plan(request: PlanRequest):
+    if request.department is not None and request.department not in DEPARTMENTS:
+        raise HTTPException(422, "Choose a department from the list.")
+    if request.degree_program is not None and request.degree_program not in DEGREE_PROGRAMS:
+        raise HTTPException(422, "Choose a degree program from the list.")
+    thread_id = str(uuid4())
+    config = {"configurable": {"thread_id": thread_id}}
+    try:
+        result = await app.state.graph.ainvoke({
+            "user_query": request.query,
+            "academic_mode": request.mode,
+            "guided_resolution": True,
+            "subcategory": request.tag,
+            "department": request.department,
+            "degree_program": request.degree_program,
+            "formal_email_sent": request.sent,
+        }, config=config)
+        return result["action_plan"]
+    finally:
+        await forget(thread_id)
 
 
 @app.post("/api/guidance")

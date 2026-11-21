@@ -49,6 +49,9 @@ def confidence_gate_node(state: RedressalState) -> dict:
 
     knowledge_score = max(senior_top, rulebook_top, web_score)
 
+    if state.get("guided_resolution"):
+        return {"confidence_score": round(knowledge_score, 4), "gate_decision": "synthesize"}
+
     # --- Clarification Point 3, forced: escalation queries always need to
     # know whether the formal channel was already tried, before Node 3 can
     # pick the initial-contact vs. HOD-escalation branch.

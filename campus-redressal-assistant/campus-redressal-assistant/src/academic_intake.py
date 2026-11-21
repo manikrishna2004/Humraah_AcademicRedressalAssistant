@@ -6,7 +6,7 @@ from typing import Literal
 
 from pydantic import BaseModel, Field, ValidationError
 
-from src.llm import DEPARTMENTS, DEGREE_PROGRAMS
+from src.llm import DEPARTMENTS, DEGREE_PROGRAMS, INTENT_RULES, OUT_OF_DOMAIN_HINTS, PROGRAM_HINTS
 
 ISSUES = {
     "supplementary_exam": "Supplementary exam",
@@ -73,3 +73,17 @@ def validate_intent(raw: dict) -> dict:
     if not result.degree_program and tag in {"attendance_waiver", "escalation"}:
         result.missing_fields.append("degree_program")
     return result.model_dump()
+
+
+def browser_intake() -> dict:
+    """Shared intake vocabulary for the local and hosted conversations."""
+    return {
+        "issues": ISSUES,
+        "scenarios": [{**scenario, "label": ISSUES[scenario["tag"]]} for scenario in SCENARIOS],
+        "aliases": [[r"\bME\b", "Mechanical Engineering", "g"]]
+        + [[pattern, replacement, "gi"] for pattern, replacement in _ALIASES],
+        "intents": [[pattern.pattern, tags["subcategory"]] for pattern, tags in INTENT_RULES],
+        "outOfDomain": OUT_OF_DOMAIN_HINTS.pattern,
+        "departments": DEPARTMENTS,
+        "programHints": PROGRAM_HINTS,
+    }

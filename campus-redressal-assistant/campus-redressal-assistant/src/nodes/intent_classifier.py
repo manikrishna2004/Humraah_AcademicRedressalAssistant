@@ -14,6 +14,9 @@ from src.state import RedressalState
 
 
 def intent_classifier_node(state: RedressalState) -> dict:
+    if state.get("guided_resolution"):
+        return {"route_decision": "retrieve" if state.get("subcategory") else "unsupported"}
+
     llm = get_llm()
     academic_mode = state.get("academic_mode")
     query = state["user_query"]

@@ -36,6 +36,7 @@ class RedressalState(TypedDict, total=False):
     session_history: list[dict[str, str]]
     turn_count: int
     academic_mode: Literal["campus", "sample"]
+    guided_resolution: bool
 
     # --- Node 1: intent classification ---
     category: Optional[str]

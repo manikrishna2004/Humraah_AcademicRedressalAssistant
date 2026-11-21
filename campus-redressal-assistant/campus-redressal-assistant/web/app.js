@@ -1,240 +1,291 @@
-import { request } from "./transport.js";
+import { createConversation } from "./conversation.js";
+import { getIntake, getPlan } from "./transport.js";
 
-const queryForm = document.querySelector("#query-form");
-const query = document.querySelector("#query");
-const modePicker = document.querySelector("#mode-picker");
-const modeNote = document.querySelector("#mode-note");
-const status = document.querySelector("#status");
-const guidance = document.querySelector("#guidance");
-const questionTitle = document.querySelector("#question-title");
-const reset = document.querySelector("#reset");
+const form = document.querySelector("#query-form");
+const input = document.querySelector("#query");
+const submit = document.querySelector("#submit");
+const intro = document.querySelector("#intro");
+const workspace = document.querySelector(".workspace");
+const conversation = document.querySelector("#conversation");
+const thread = document.querySelector("#thread");
+const current = document.querySelector("#current");
 const topics = document.querySelector("#topic-list");
+const error = document.querySelector("#error");
+const reset = document.querySelector("#reset");
+const sample = document.querySelector("#sample");
+const sampleBanner = document.querySelector("#sample-banner");
 const dialog = document.querySelector("#how-dialog");
 
-const modeNotes = {
-  campus: "Pilot coverage varies by issue and admission batch.",
-  sample: "Fictional policy, senior accounts and contacts for trying the workflow.",
+const TOPICS = {
+  supplementary_exam: ["Supplementary exam", "◷"],
+  grade_review: ["Grades and answer scripts", "≡"],
+  escalation: ["Faculty advisor", "…"],
+  attendance_waiver: ["Attendance waiver", "✓"],
 };
-const topicIcons = {
-  supplementary_exam: "↻",
-  grade_review: "≡",
-  escalation: "…",
-  attendance_waiver: "✓",
-};
-let session = null;
-let busy = false;
 
-function element(tag, className, content) {
-  const node = document.createElement(tag);
-  if (className) node.className = className;
-  if (content) node.textContent = content;
-  return node;
+let engine;
+let state;
+let turns = [];
+let mode = "campus";
+let generation = 0;
+
+function node(tag, className, text) {
+  const element = document.createElement(tag);
+  if (className) element.className = className;
+  if (text) element.textContent = text;
+  return element;
 }
 
-function showStatus(message = "", isError = false) {
-  status.hidden = !message;
-  status.textContent = message;
-  status.classList.toggle("error", isError);
+function button(className, label, action) {
+  const element = node("button", className, label);
+  element.type = "button";
+  element.addEventListener("click", action);
+  return element;
 }
 
-async function api(path, body) {
-  const response = await request(path, body ? {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(body),
-  } : undefined);
-  const data = await response.json();
-  if (!response.ok) {
-    const message = typeof data.detail === "string" ? data.detail : "Check the details and try again.";
-    throw new Error(message);
+function displayError(message = "") {
+  error.textContent = message;
+  error.hidden = !message;
+}
+
+function display(active) {
+  intro.hidden = active;
+  form.hidden = active;
+  conversation.hidden = !active;
+  reset.hidden = !active;
+  workspace.classList.toggle("active", active);
+}
+
+function clear(text = "", focus = true) {
+  generation += 1;
+  state = undefined;
+  turns = [];
+  thread.replaceChildren();
+  current.replaceChildren();
+  conversation.removeAttribute("aria-busy");
+  display(false);
+  displayError();
+  input.value = text;
+  if (focus) input.focus();
+}
+
+function start(query, topic = null) {
+  state = engine.start(query, mode, topic);
+  turns = [];
+  display(true);
+  render();
+}
+
+function message(role, text, edit) {
+  const entry = node("div", `message ${role}`);
+  const badge = node("span", "sr-only", role === "user" ? "You" : "Humraah");
+  entry.append(badge);
+  if (role === "assistant") {
+    const mark = node("span", "assistant-mark");
+    mark.setAttribute("aria-hidden", "true");
+    mark.append(node("i"));
+    entry.append(mark);
   }
-  return data;
+  const content = node("div");
+  content.append(node("p", "bubble", text));
+  if (edit) content.append(edit);
+  entry.append(content);
+  return entry;
 }
 
-function renderTopics(scenarios) {
-  for (const scenario of scenarios) {
-    const button = element("button", "topic");
-    button.type = "button";
-    const icon = element("span", "topic-icon", topicIcons[scenario.tag]);
-    icon.setAttribute("aria-hidden", "true");
-    button.append(icon, document.createTextNode(scenario.label));
-    button.addEventListener("click", () => {
-      if (busy) return;
-      clearGuidance();
-      query.value = scenario.query;
-      query.focus();
+function focusLatest(element) {
+  element.tabIndex = -1;
+  element.focus({ preventScroll: true });
+  element.scrollIntoView?.({ block: "nearest", behavior: "instant" });
+}
+
+function renderThread() {
+  const editQuestion = button("quiet", "Edit question", () => clear(state.query));
+  const entries = [message("user", state.query, editQuestion)];
+  for (const [index, item] of turns.entries()) {
+    const edit = button("quiet", "Edit answer", () => {
+      state = item.before;
+      turns = turns.slice(0, index);
+      render();
     });
-    topics.append(button);
+    edit.setAttribute("aria-label", `Edit answer to: ${item.prompt.text}`);
+    entries.push(message("assistant", item.prompt.text), message("user", item.label, edit));
   }
+  thread.replaceChildren(...entries);
 }
 
-function clearGuidance() {
-  if (session) {
-    request(`/api/guidance/${session}`, { method: "DELETE" }).catch(() => {});
-    session = null;
-  }
-  guidance.replaceChildren();
-  modePicker.disabled = false;
-  questionTitle.textContent = "What happened?";
-  reset.hidden = true;
-  queryForm.hidden = false;
-  showStatus();
+function accept(prompt, value, label) {
+  const before = state;
+  state = engine.answer(state, prompt, value);
+  turns.push({ prompt, label, before });
+  render();
 }
 
-function showFollowUp(response) {
-  session = response.session;
-  const card = element("section", "guide");
-  const heading = element("h3", "", response.question);
-  heading.tabIndex = -1;
-  card.append(element("p", "context", "A quick follow-up"), heading);
-  const submitAnswer = (answer) => submitGuidance(
-    `/api/guidance/${response.session}/answer`,
-    { answer, turn: response.turn },
-  );
-
-  if (response.fields.length) {
-    const form = element("form", "clarification");
-    const selectGrid = element("div", "select-grid");
-    for (const field of response.fields) {
-      const label = element("label", "", field.label);
-      const select = element("select");
-      select.name = field.key;
-      select.required = true;
-      select.add(new Option("Select an option", ""));
-      for (const option of field.options) select.add(new Option(option, option));
-      label.append(select);
-      selectGrid.append(label);
-    }
-    const button = element("button", "primary", "Continue");
-    form.append(selectGrid, button);
-    form.addEventListener("submit", (event) => {
+function renderFollowUp(prompt) {
+  const panel = node("section", "follow-up");
+  const question = message("assistant", prompt.text);
+  const heading = question.querySelector(".bubble");
+  heading.id = "follow-up-question";
+  heading.setAttribute("role", "heading");
+  heading.setAttribute("aria-level", "3");
+  panel.append(question);
+  if (prompt.dropdown) {
+    const selection = node("form", "choices choice-form");
+    const select = node("select");
+    select.required = true;
+    select.setAttribute("aria-labelledby", heading.id);
+    select.add(new Option("Select a department", ""));
+    for (const [value, label] of prompt.choices) select.add(new Option(label, value));
+    selection.append(select, node("button", "primary", "Continue"));
+    selection.addEventListener("submit", (event) => {
       event.preventDefault();
-      submitAnswer(Object.fromEntries(new FormData(form)));
+      accept(prompt, select.value, select.selectedOptions[0].text);
     });
-    card.append(form);
+    panel.append(selection);
   } else {
-    const choices = element("div", "choices");
-    for (const option of response.choices) {
-      const button = element("button", "choice", option.label);
-      button.addEventListener("click", () => submitAnswer(option.value));
-      choices.append(button);
+    const choices = node("div", "choices");
+    choices.setAttribute("role", "group");
+    choices.setAttribute("aria-labelledby", heading.id);
+    for (const [value, label] of prompt.choices) {
+      choices.append(button("choice", label, () => accept(prompt, value, label)));
     }
-    card.append(choices);
+    panel.append(choices);
   }
-  guidance.replaceChildren(card);
-  heading.focus();
+  current.replaceChildren(panel);
+  focusLatest(heading);
 }
 
-function citation(label, url) {
-  const node = element(url ? "a" : "span", "citation", label);
-  if (url) {
-    node.href = url;
-    node.target = "_blank";
-    node.rel = "noopener noreferrer";
+function link(label, url, className) {
+  const anchor = node("a", className, label);
+  anchor.href = url;
+  if (url.startsWith("https:")) {
+    anchor.target = "_blank";
+    anchor.rel = "noopener noreferrer";
   }
-  return node;
+  return anchor;
 }
 
-function sourceCard(title, items, empty, contacts = false) {
-  const card = element("section", "source-card");
-  card.append(element("h3", "", title));
-  if (!items.length) card.append(element("p", "", empty));
-  for (const item of items) {
-    const row = element("div", "source-item");
-    if (contacts) {
-      row.append(element("strong", "", item.role));
-      if (item.name) row.append(element("p", "", item.name));
-      if (item.office) row.append(element("p", "", item.office));
-      if (item.office_hours) row.append(element("p", "", item.office_hours));
-      if (item.email) row.append(element("p", "citation", item.email));
-      row.append(item.url ? citation(item.detail, item.url) : element("p", "context", item.detail));
-    } else {
-      row.append(element("p", "", item.text), citation(item.label, item.url));
+function renderContacts(contacts) {
+  const panel = node("section", "plan-panel");
+  panel.append(node("h3", "", "Who to contact"));
+  for (const contact of contacts) {
+    const item = node("div", "source-item");
+    item.append(node("p", "contact-role", contact.role));
+    for (const text of [contact.name, contact.office, contact.office_hours].filter(Boolean)) {
+      item.append(node("p", "", text));
     }
-    card.append(row);
+    if (contact.email && mode === "campus") {
+      item.append(link(contact.email, `mailto:${contact.email}`, "contact-source"));
+    } else if (contact.email) {
+      item.append(node("p", "contact-source", contact.email));
+    }
+    if (contact.url) item.append(link(contact.detail, contact.url, "contact-source"));
+    else if (contact.detail) item.append(node("p", "helper", contact.detail));
+    panel.append(item);
   }
-  return card;
+  return panel;
 }
 
-function showPlan(response) {
-  session = null;
-  const sample = modePicker.querySelector("input:checked").value === "sample";
-  const result = element("section", "guide result");
-  const context = [response.issue, response.department].filter(Boolean).join(" · ");
-  const heading = element("h3", "", response.supported ? "What to do next" : response.issue);
-  heading.tabIndex = -1;
-  const next = element("div", "next-step");
-  if (response.supported) next.append(element("p", "context", context));
-  next.append(heading, element("p", "", response.next_step));
-  result.append(next);
-  for (const notice of response.notices) {
-    const block = element("div", "notice");
-    block.append(element("strong", "", notice.title), element("p", "", notice.text));
-    result.append(block);
+function renderSources(title, items, expanded) {
+  const panel = node("details", "plan-panel");
+  panel.open = expanded;
+  panel.append(node("summary", "", title));
+  for (const source of items) {
+    const item = node("div", "source-item");
+    item.append(node("p", "", source.text));
+    if (source.url) item.append(link(source.label, source.url, "citation"));
+    else item.append(node("p", "citation", source.label));
+    panel.append(item);
   }
-  if (response.supported) {
-    const cards = element("div", "sources");
-    cards.append(
-      sourceCard(sample ? "Sample rulebook" : "Official policy", response.rules, "No matching policy document in this mode."),
-      sourceCard("Senior tips", response.tips, sample ? "No sample account matches these details." : "No verified senior account is available for this issue."),
-      sourceCard("Who to contact", response.contacts, "Use the institute directory to confirm who handles this issue.", true),
-    );
-    result.append(cards);
-  }
-  guidance.replaceChildren(result);
-  heading.focus();
+  return panel;
 }
 
-async function submitGuidance(path, body) {
-  if (busy) return;
-  busy = true;
-  const controls = [...document.querySelectorAll("#submit, .choice, .clarification button, #topic-list button")];
-  for (const control of controls) control.disabled = true;
-  modePicker.disabled = true;
-  reset.disabled = true;
-  showStatus("Looking up guidance…");
-  try {
-    const response = await api(path, body);
-    queryForm.hidden = true;
-    questionTitle.textContent = "Your guidance";
-    reset.hidden = false;
-    showStatus();
-    if (response.kind === "clarification") showFollowUp(response);
-    else showPlan(response);
-  } catch (error) {
-    showStatus(error instanceof SyntaxError ? "Humraah is temporarily unavailable. Please try again." : error.message, true);
-    if (!session) modePicker.disabled = false;
-  } finally {
-    busy = false;
-    reset.disabled = false;
-    for (const control of controls) control.disabled = false;
+function renderPlan(plan) {
+  const article = node("article", "plan");
+  const summary = node("div", "plan-summary");
+  const heading = node("h3", "", plan.supported ? "What to do next" : "Find the right kind of help");
+  if (plan.supported) {
+    const context = [plan.issue, plan.department].filter(Boolean).join(" · ");
+    summary.append(node("p", "plan-context", context));
   }
+  summary.append(heading, node("p", "", plan.next_step));
+  article.append(summary);
+  if (plan.supported) {
+    const body = node("div", "plan-body");
+    if (plan.contacts.length) body.append(renderContacts(plan.contacts));
+    for (const notice of plan.notices) {
+      const panel = node("aside", "plan-notice");
+      panel.append(node("strong", "", notice.title), node("p", "", notice.text));
+      body.append(panel);
+    }
+    if (plan.rules.length) body.append(renderSources(mode === "sample" ? "Sample policy" : "Official policy", plan.rules, true));
+    if (plan.tips.length) body.append(renderSources("Sample senior tips", plan.tips, false));
+    article.append(body);
+  }
+  current.replaceChildren(article);
+  focusLatest(heading);
 }
 
-queryForm.addEventListener("submit", (event) => {
-  event.preventDefault();
-  const text = query.value.trim();
-  if (text.length < 3) {
-    showStatus("Describe your issue in a few words.", true);
-    query.focus();
+async function render() {
+  const revision = ++generation;
+  renderThread();
+  displayError();
+  const followUp = engine.question(state);
+  if (followUp) {
+    conversation.removeAttribute("aria-busy");
+    renderFollowUp(followUp);
     return;
   }
-  const mode = modePicker.querySelector("input:checked").value;
-  submitGuidance("/api/guidance", { query: text, mode });
+  current.replaceChildren(node("p", "helper", "Checking guidance…"));
+  conversation.setAttribute("aria-busy", "true");
+  try {
+    const plan = await getPlan(engine.planInput(state));
+    if (revision === generation) renderPlan(plan);
+  } catch (failure) {
+    if (revision === generation) {
+      displayError(failure.message);
+      current.replaceChildren(button("outline", "Try again", render));
+    }
+  } finally {
+    if (revision === generation) conversation.removeAttribute("aria-busy");
+  }
+}
+
+form.addEventListener("submit", (event) => {
+  event.preventDefault();
+  const query = input.value.trim();
+  if (query.length >= 3 && engine) start(query);
+  else displayError("Enter a few words about what happened.");
 });
-reset.addEventListener("click", () => {
-  clearGuidance();
-  query.value = "";
-  query.focus();
+input.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.shiftKey && !event.isComposing && engine) {
+    event.preventDefault();
+    form.requestSubmit();
+  }
 });
-modePicker.addEventListener("change", (event) => {
-  modeNote.textContent = modeNotes[event.target.value];
+reset.addEventListener("click", () => clear());
+sample.addEventListener("click", () => {
+  mode = mode === "campus" ? "sample" : "campus";
+  const sampleActive = mode === "sample";
+  sample.textContent = sampleActive ? "Return to campus sources" : "Try sample data";
+  sample.setAttribute("aria-pressed", String(sampleActive));
+  sampleBanner.hidden = !sampleActive;
+  clear();
 });
 document.querySelector("#how-button").addEventListener("click", () => dialog.showModal());
 
 try {
-  const { scenarios } = await api("/api/options");
-  renderTopics(scenarios);
-} catch {
-  topics.append(element("p", "helper", "Guided topics are temporarily unavailable. You can still type your issue."));
+  const intake = await getIntake();
+  engine = createConversation(intake);
+  for (const scenario of intake.scenarios) {
+    const [title, icon] = TOPICS[scenario.tag] ?? [scenario.label, "·"];
+    const topic = button("topic", "", () => start(title, scenario.tag));
+    const mark = node("span", "topic-mark", icon);
+    mark.setAttribute("aria-hidden", "true");
+    topic.append(mark, node("span", "topic-name", title));
+    topics.append(topic);
+  }
+  submit.disabled = false;
+} catch (failure) {
+  displayError(failure.message);
 }

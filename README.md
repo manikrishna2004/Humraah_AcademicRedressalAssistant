@@ -39,10 +39,10 @@ model. It builds its indexes at startup without an API key or Ollama.
 - **Sample mode** uses the repository's fictional policy, peer and directory
   records. To try a source discrepancy, ask about an attendance waiver,
   then pick Computer Science and Engineering and UG 4-Year B.Tech.
-- The web flow resumes each follow-up on the same LangGraph thread. It keeps
-  pending answers in memory for up to 20 minutes and clears completed
-  threads. Keep the server at one worker for the MVP. The browser restricts
-  lookup to the selected source mode.
+- The browser keeps one conversation in the tab and accepts up to two
+  follow-ups. Students can edit their question or an earlier answer. The
+  local app runs the resolved request through LangGraph and restricts
+  retrieval to the selected source mode.
 
 The tests in `tests/test_web_mvp.py` verify expected answers, citations,
 clarification choices and fallback behavior through the browser API. They use

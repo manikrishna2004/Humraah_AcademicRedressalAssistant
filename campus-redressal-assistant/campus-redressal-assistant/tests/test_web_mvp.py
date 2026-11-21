@@ -123,3 +123,26 @@ def test_browser_entry_point_serves_required_assets(client):
     assert client.get("/style.css").status_code == 200
     assert client.get("/app.js").status_code == 200
     assert len(client.get("/api/options").json()["scenarios"]) == 4
+
+
+def test_resolved_browser_plan_uses_graph_sources_without_reasking(client):
+    response = client.post("/api/plan", json={
+        "query": "My marks look wrong.",
+        "mode": "campus",
+        "tag": "mid_sem_review",
+    })
+    assert response.status_code == 200
+    result = response.json()
+    assert result["issue"] == "Mid-sem answer script"
+    assert "§30.1.3" in result["rules"][0]["label"]
+
+
+def test_resolved_browser_plan_uses_conditional_advisor_guidance_if_unsure(client):
+    response = client.post("/api/plan", json={
+        "query": "My FA hasn't answered.",
+        "mode": "campus",
+        "tag": "escalation",
+        "sent": None,
+    })
+    assert response.status_code == 200
+    assert "If you haven't emailed" in response.json()["next_step"]

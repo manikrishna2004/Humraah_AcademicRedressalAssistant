@@ -12,9 +12,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from src.academic_intake import ISSUES, SCENARIOS, _ALIASES
+from src.academic_intake import ISSUES, browser_intake
 from src.academic_plan import academic_plan
-from src.llm import DEPARTMENTS, DEGREE_PROGRAMS, INTENT_RULES, OUT_OF_DOMAIN_HINTS, PROGRAM_HINTS
+from src.llm import DEPARTMENTS, DEGREE_PROGRAMS
 
 
 def load_sources():
@@ -64,11 +64,11 @@ def export_plans():
             contact for contact in directory
             if mode == "sample" and contact["department"] == dept
         ]
-        for sent in ("yes", "no") if tag == "escalation" else ("",):
+        for sent in ("yes", "no", "") if tag == "escalation" else ("",):
             plan = academic_plan({
                 "academic_mode": mode,
                 "subcategory": tag,
-                "formal_email_sent": sent == "yes",
+                "formal_email_sent": (sent == "yes") if sent else None,
                 "retrieved_rules": selected_rules,
                 "retrieved_senior_fundae": selected_tips,
                 "retrieved_directory": selected_contacts,
@@ -86,29 +86,14 @@ def export_plans():
 
 def build(output: Path):
     output.mkdir(parents=True, exist_ok=True)
-    for name in ("index.html", "app.js", "style.css"):
+    for name in ("index.html", "app.js", "style.css", "conversation.js"):
         shutil.copyfile(ROOT / "web" / name, output / name)
+    shutil.copytree(ROOT / "web" / "fonts", output / "fonts", dirs_exist_ok=True)
     shutil.copyfile(ROOT / "deployment" / "reviewer_transport.mjs", output / "transport.js")
-
-    page = output / "index.html"
-    html = page.read_text()
-    html = html.replace(
-        '<span class="helper">Leave out names and roll numbers.</span>',
-        '<span class="helper">Your question stays in this tab.</span>',
-    )
-    page.write_text(html)
 
     index, templates = export_plans()
     data = {
-        "issues": ISSUES,
-        "scenarios": [{**scenario, "label": ISSUES[scenario["tag"]]} for scenario in SCENARIOS],
-        "aliases": [[r"\bME\b", "Mechanical Engineering", "g"]]
-        + [[pattern, replacement, "gi"] for pattern, replacement in _ALIASES],
-        "intents": [[pattern.pattern, tags["subcategory"]] for pattern, tags in INTENT_RULES],
-        "outOfDomain": OUT_OF_DOMAIN_HINTS.pattern,
-        "departments": DEPARTMENTS,
-        "degreePrograms": DEGREE_PROGRAMS,
-        "programHints": PROGRAM_HINTS,
+        **browser_intake(),
         "fallback": academic_plan({"academic_mode": "campus"}),
         "index": index,
         "plans": templates,

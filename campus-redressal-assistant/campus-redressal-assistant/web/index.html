@@ -3,71 +3,79 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Find the next step for an academic issue at IIT Kharagpur.">
-  <meta name="theme-color" content="#f8f7fc">
-  <title>Humraah · Campus academic help</title>
+  <meta name="description" content="Find your next step for an academic issue at IIT Kharagpur.">
+  <meta name="theme-color" content="#f6f7ee">
+  <title>Humraah · Campus academic guidance</title>
+  <link rel="preload" href="./fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="./fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="stylesheet" href="./style.css">
   <script type="module" src="./app.js"></script>
 </head>
 <body>
   <header class="site-header">
-    <div class="shell header-content">
-      <a class="brand" href="./" aria-label="Humraah home"><span class="brand-symbol" aria-hidden="true">H</span>Humraah</a>
-      <button class="text-button" type="button" id="how-button">How it works</button>
+    <div class="shell header-inner">
+      <a class="brand" href="./" aria-label="Humraah home">
+        <span class="brand-mark" aria-hidden="true"><i></i></span>
+        <span>Humraah</span>
+      </a>
+      <nav class="header-actions" aria-label="Help and navigation">
+        <button class="quiet" id="how-button" type="button">How it works</button>
+        <button class="outline" id="reset" type="button" hidden>New question</button>
+      </nav>
     </div>
   </header>
+
   <main class="shell">
-    <section class="hero" aria-labelledby="page-title">
-      <div class="hero-text">
-        <p class="eyebrow">IIT Kharagpur · Academic help</p>
-        <h1 id="page-title">Find your<br class="hero-break"> next step.</h1>
-        <p>Describe your academic issue to see which rule applies and who can help.</p>
-      </div>
-      <div class="hero-art" aria-hidden="true">
-        <div class="orbit orbit-one"></div><div class="orbit orbit-two"></div><div class="orbit orbit-three"></div>
-        <div class="orbit orbit-four"></div><div class="orbit-point point-one"></div><div class="orbit-point point-two"></div>
-        <div class="orbit-point point-three"></div><div class="orbit-core"><div></div></div>
-      </div>
+    <section class="intro" id="intro">
+      <p class="context-label"><span aria-hidden="true"></span>IIT Kharagpur · Academic guidance</p>
+      <h1>What do you need<br class="intro-break"> help with?</h1>
+      <p class="intro-copy">Describe what happened and find your next step, who to contact, and the policy behind it.</p>
     </section>
 
-    <section class="main-area" aria-label="Find academic guidance">
-      <div class="workspace">
-        <div class="section-heading">
-          <h2 id="question-title">What happened?</h2>
-          <button class="text-button" id="reset" type="button" hidden>New question</button>
+    <div class="workspace">
+      <section class="help-desk" aria-label="Academic guidance conversation">
+        <div class="sample-banner" id="sample-banner" hidden>
+          <strong>Sample data</strong> <span>Policy examples, senior accounts and contacts in this mode are fictional.</span>
         </div>
-        <fieldset class="mode-picker" id="mode-picker">
-          <legend class="sr-only">Source mode</legend>
-          <label><input name="mode" type="radio" value="campus" checked><span>Campus sources</span></label>
-          <label><input name="mode" type="radio" value="sample"><span>Sample mode</span></label>
-        </fieldset>
-        <p id="mode-note" class="mode-note">Pilot coverage varies by issue and admission batch.</p>
-        <form id="query-form">
-          <label class="sr-only" for="query">Describe your academic issue</label>
-          <textarea id="query" name="query" maxlength="700" minlength="3" required rows="3" placeholder="e.g. I missed the suppli form deadline. What can I do?"></textarea>
-          <div class="form-footer">
+        <form class="composer" id="query-form">
+          <label for="query">Describe your academic issue</label>
+          <textarea id="query" name="query" rows="3" maxlength="700" minlength="3" required enterkeyhint="send"
+            placeholder="I missed the suppli form deadline. What can I do?"></textarea>
+          <div class="composer-footer">
             <span class="helper">Leave out names and roll numbers.</span>
-            <button class="primary" type="submit" id="submit">Find my next step</button>
+            <button class="primary" id="submit" type="submit" disabled>Get guidance</button>
           </div>
         </form>
-        <p id="status" role="status" class="status" hidden></p>
-        <div id="guidance" aria-live="polite"></div>
-      </div>
+
+        <div class="conversation" id="conversation" aria-label="Conversation" hidden>
+          <h2 class="thread-title">Your guidance</h2>
+          <div class="thread" id="thread"></div>
+          <div class="current" id="current" aria-live="polite"></div>
+        </div>
+        <p id="error" class="error" role="alert" hidden></p>
+        <noscript><p class="error">Enable JavaScript to use the guidance conversation.</p></noscript>
+      </section>
 
       <aside class="topics" aria-labelledby="topics-title">
         <h2 id="topics-title">Start with a topic</h2>
-        <p>Pick a common situation and make it your own.</p>
-        <div id="topic-list" class="topic-list"></div>
+        <div class="topic-list" id="topic-list"></div>
+        <div class="topic-footer">
+          <button class="quiet" id="sample" type="button" aria-pressed="false">Try sample data</button>
+        </div>
       </aside>
-    </section>
+    </div>
+
+    <footer class="footer">
+      <span>Student-built pilot</span>
+      <span>Confirm deadlines with IIT Kharagpur.</span>
+    </footer>
   </main>
-  <footer class="shell footer"><p>Humraah is a student-built pilot. Confirm time-sensitive steps with your institute.</p></footer>
 
   <dialog id="how-dialog" aria-labelledby="how-title">
     <h2 id="how-title">How Humraah works</h2>
-    <p>Type your issue or choose a guided topic. Humraah may ask for your department, program, or what you have already tried.</p>
-    <p><strong>Campus sources</strong> links to IIT Kharagpur documents where the pilot has coverage. <strong>Sample mode</strong> uses fictional rulebook, senior, and directory entries to demonstrate the workflow.</p>
-    <form method="dialog"><button class="primary">Got it</button></form>
+    <p>Type your issue or choose a topic. Humraah asks a follow-up when the answer can change your next step.</p>
+    <p>Campus guidance cites institute documents where available. Use the contact in your plan to confirm anything your batch or department handles differently.</p>
+    <form method="dialog"><button class="primary">Done</button></form>
   </dialog>
 </body>
 </html>

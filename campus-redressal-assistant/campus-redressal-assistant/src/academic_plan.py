@@ -96,6 +96,12 @@ def academic_plan(state: RedressalState) -> dict:
             matches = [row for row in state.get("retrieved_directory", []) if row["role"] == role]
             if matches:
                 contacts = [{**row, "detail": "Sample directory record"} for row in matches]
+        if tag == "escalation" and sent is None:
+            next_step = (
+                "If you haven't emailed your advisor, send a short note with the course code and deadline. "
+                "If you've already emailed and need a reply, ask your department office who can help."
+            )
+            contacts = []
         if not contacts:
             contacts = [{"role": "Department office", "detail": "Use the academic unit directory to find the current contact.", "url": ACADEMICS}]
 
