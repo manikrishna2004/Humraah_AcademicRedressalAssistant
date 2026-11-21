@@ -31,7 +31,7 @@
         <div class="hero-copy">
           <p class="context-label">IIT Kharagpur · Academic help</p>
           <h1>Find your<br>next step.</h1>
-          <p class="intro-copy">Get through an academic roadblock with a clear action, the right campus contact, and the policy behind it.</p>
+          <p class="intro-copy">Tell Humraah what happened. We’ll work out the next step, who to contact, and what to say.</p>
         </div>
         <figure class="hero-photo">
           <img src="./assets/campus.webp" alt="IIT Kharagpur’s main building" width="960" height="628" fetchpriority="high">
@@ -47,16 +47,25 @@
               placeholder="I missed the suppli form deadline. What can I do?"></textarea>
             <div class="composer-footer">
               <span class="helper">Leave out names and roll numbers.</span>
-              <button class="primary" id="submit" type="submit" disabled>Get guidance</button>
+              <button class="primary" id="submit" type="submit" disabled>Start a conversation</button>
             </div>
           </form>
           <div class="conversation" id="conversation" aria-label="Conversation" hidden>
             <div class="thread-header">
-              <h2 class="thread-title">Your guidance</h2>
+              <h2 class="thread-title">Your conversation</h2>
               <button class="quiet" id="reset" type="button" hidden>New question</button>
             </div>
             <div class="thread" id="thread"></div>
             <div class="current" id="current" aria-live="polite"></div>
+            <div class="follow-through" id="follow-through" aria-live="polite"></div>
+            <form class="reply-form" id="reply-form" hidden>
+              <label for="reply" id="reply-label">Your reply</label>
+              <div class="reply-controls">
+                <textarea id="reply" rows="2" maxlength="500" enterkeyhint="send" required placeholder="Reply in your own words…"></textarea>
+                <button class="primary" id="reply-submit" type="submit">Send</button>
+              </div>
+              <div class="reply-suggestions" id="reply-suggestions" aria-label="Suggested follow-ups"></div>
+            </form>
           </div>
           <p id="error" class="error" role="alert" hidden></p>
           <noscript><p class="error">Enable JavaScript to ask for guidance or search the campus directory.</p></noscript>
@@ -99,7 +108,7 @@
 
   <dialog id="how-dialog" aria-labelledby="how-title">
     <h2 id="how-title">How Humraah works</h2>
-    <p>Describe an issue or choose a topic. Humraah asks a follow-up when the answer changes your next step or contact.</p>
+    <p>Describe an issue or choose a topic. Reply in your own words or pick an option. After the plan, you can ask about a contact, an office visit, or what to write.</p>
     <p>Campus policies and office details link to institute sources. Senior fundae are fictional examples for this prototype.</p>
     <p>Campus photo by Bubamannaiitkgp11 via Wikimedia Commons, resized and shown in a cropped frame.
       <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.

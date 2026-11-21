@@ -41,7 +41,9 @@ model. It builds its indexes at startup without an API key or Ollama.
 - `data/campus_senior_tips.json` contains fictional examples. The web app labels
   these next to the tips. Historical mock data serves the CLI evaluation.
 - The browser keeps one conversation in the tab and accepts up to two
-  follow-ups. Students can edit their question or an earlier answer. The
+  clarification questions. Students can answer in their own words, edit an
+  answer, and continue with contextual contact, visit, deadline or email
+  drafting questions after the plan. The
   local app runs the resolved request through LangGraph and restricts
   retrieval to the selected source mode.
 

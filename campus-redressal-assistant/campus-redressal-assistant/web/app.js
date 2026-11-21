@@ -1,4 +1,5 @@
 import { createConversation } from "./conversation.js";
+import { respond, suggestions } from "./companion.js";
 import { getDirectory, getIntake, getPlan } from "./transport.js";
 
 const form = document.querySelector("#query-form");
@@ -10,6 +11,12 @@ const conversation = document.querySelector("#conversation");
 const thread = document.querySelector("#thread");
 const current = document.querySelector("#current");
 const topics = document.querySelector("#topic-list");
+const followThrough = document.querySelector("#follow-through");
+const replyForm = document.querySelector("#reply-form");
+const replyLabel = document.querySelector("#reply-label");
+const replyInput = document.querySelector("#reply");
+const replySubmit = document.querySelector("#reply-submit");
+const replySuggestions = document.querySelector("#reply-suggestions");
 const error = document.querySelector("#error");
 const reset = document.querySelector("#reset");
 const guide = document.querySelector("#guide");
@@ -31,6 +38,9 @@ const TOPICS = {
 
 let engine;
 let state;
+let originalQuery;
+let activePrompt;
+let latestPlan;
 let turns = [];
 let directoryRevision = 0;
 let directoryDebounce;
@@ -67,6 +77,11 @@ function clear(text = "", focus = true) {
   generation += 1;
   state = undefined;
   turns = [];
+  latestPlan = undefined;
+  activePrompt = undefined;
+  replyInput.value = "";
+  showReply(false);
+  followThrough.replaceChildren();
   thread.replaceChildren();
   current.replaceChildren();
   conversation.removeAttribute("aria-busy");
@@ -78,7 +93,10 @@ function clear(text = "", focus = true) {
 
 function start(query, topic = null) {
   state = engine.start(query, topic);
+  originalQuery = query;
   turns = [];
+  followThrough.replaceChildren();
+  replyInput.value = "";
   display(true);
   render();
 }
@@ -107,12 +125,14 @@ function focusLatest(element) {
 }
 
 function renderThread() {
-  const editQuestion = button("quiet", "Edit question", () => clear(state.query));
-  const entries = [message("user", state.query, editQuestion)];
+  const editQuestion = button("quiet", "Edit question", () => clear(originalQuery));
+  const entries = [message("user", originalQuery, editQuestion)];
   for (const [index, item] of turns.entries()) {
     const edit = button("quiet", "Edit answer", () => {
       state = item.before;
       turns = turns.slice(0, index);
+      followThrough.replaceChildren();
+      replyInput.value = "";
       render();
     });
     edit.setAttribute("aria-label", `Edit answer to: ${item.prompt.text}`);
@@ -121,17 +141,22 @@ function renderThread() {
   thread.replaceChildren(...entries);
 }
 
-function accept(prompt, value, label) {
+function accept(prompt, label, resolved) {
   const before = state;
-  state = engine.answer(state, prompt, value);
+  state = resolved;
   turns.push({ prompt, label, before });
+  followThrough.replaceChildren();
+  replyInput.value = "";
   render();
 }
 
 function renderFollowUp(prompt) {
   const panel = node("section", "follow-up");
-  const question = message("assistant", prompt.text);
-  const heading = question.querySelector(".bubble");
+  const question = message("assistant", "");
+  const bubble = question.querySelector(".bubble");
+  if (prompt.lead) bubble.append(node("span", "prompt-lead", prompt.lead));
+  const heading = node("span", "prompt-question", prompt.text);
+  bubble.append(heading);
   heading.id = "follow-up-question";
   heading.setAttribute("role", "heading");
   heading.setAttribute("aria-level", "3");
@@ -146,7 +171,7 @@ function renderFollowUp(prompt) {
     selection.append(select, node("button", "primary", "Continue"));
     selection.addEventListener("submit", (event) => {
       event.preventDefault();
-      accept(prompt, select.value, select.selectedOptions[0].text);
+      accept(prompt, select.selectedOptions[0].text, engine.answer(state, prompt, select.value));
     });
     panel.append(selection);
   } else {
@@ -154,11 +179,12 @@ function renderFollowUp(prompt) {
     choices.setAttribute("role", "group");
     choices.setAttribute("aria-labelledby", heading.id);
     for (const [value, label] of prompt.choices) {
-      choices.append(button("choice", label, () => accept(prompt, value, label)));
+      choices.append(button("choice", label, () => accept(prompt, label, engine.answer(state, prompt, value))));
     }
     panel.append(choices);
   }
   current.replaceChildren(panel);
+  showReply(true, prompt);
   focusLatest(heading);
 }
 
@@ -244,6 +270,7 @@ function renderSources(title, items, expanded) {
 }
 
 function renderPlan(plan) {
+  latestPlan = plan;
   const article = node("article", "plan");
   const summary = node("div", "plan-summary");
   const heading = node("h3", "", plan.supported ? "What to do next" : "Find the right kind of help");
@@ -261,19 +288,23 @@ function renderPlan(plan) {
       panel.append(node("strong", "", notice.title), node("p", "", notice.text));
       body.append(panel);
     }
-    if (plan.rules.length) body.append(renderSources("Official policy", plan.rules, true));
+    if (plan.rules.length) body.append(renderSources("Official policy", plan.rules, false));
     if (plan.tips.length) body.append(renderSources("Senior fundae · Fictional examples", plan.tips, false));
     article.append(body);
   }
   current.replaceChildren(article);
+  showReply(true);
   focusLatest(heading);
 }
 
 async function render() {
   const revision = ++generation;
+  latestPlan = undefined;
+  showReply(false);
   renderThread();
   displayError();
   const followUp = engine.question(state);
+  activePrompt = followUp;
   if (followUp) {
     conversation.removeAttribute("aria-busy");
     renderFollowUp(followUp);
@@ -293,6 +324,90 @@ async function render() {
     if (revision === generation) conversation.removeAttribute("aria-busy");
   }
 }
+
+function showReply(visible, prompt = null) {
+  replyForm.hidden = !visible;
+  replySubmit.disabled = !visible;
+  if (!visible) {
+    replySuggestions.replaceChildren();
+    return;
+  }
+  replyLabel.textContent = prompt ? "Your reply" : "Ask a follow-up";
+  replyInput.placeholder = prompt ? "Reply in your own words…" : "What would you like to ask next?";
+  replySuggestions.replaceChildren(...(latestPlan ? suggestions(state, latestPlan) : []).map(
+    (label) => button("choice", label, () => handleReply(label))
+  ));
+}
+
+function showExchange(text, response) {
+  followThrough.append(message("user", text));
+  const answer = message("assistant", response.text);
+  const content = answer.lastElementChild;
+  if (response.draft) {
+    const draft = node("div", "email-draft");
+    const status = node("span", "helper");
+    status.setAttribute("role", "status");
+    const copy = button("outline", "Copy draft", async () => {
+      try {
+        await navigator.clipboard.writeText(response.draft);
+        status.textContent = "Copied.";
+      } catch {
+        status.textContent = "Select the draft text to copy it.";
+      }
+    });
+    draft.append(node("p", "draft-copy", response.draft), copy, status);
+    content.append(draft);
+  }
+  if (response.links?.length) {
+    const links = node("div", "companion-links");
+    for (const source of response.links) links.append(link(source.label, source.url));
+    content.append(links);
+  }
+  followThrough.append(answer);
+  focusLatest(answer.querySelector(".bubble"));
+}
+
+function handleReply(text) {
+  if (!text || !state) return;
+  if (activePrompt) {
+    const updated = engine.interpretReply(state, activePrompt, text);
+    if (updated) {
+      accept(activePrompt, text, updated);
+    } else {
+      const remembered = engine.remember(state, text);
+      const newDepartment = remembered.department !== state.department ? remembered.department : null;
+      state = remembered;
+      replyInput.value = "";
+      showExchange(text, {
+        text: newDepartment
+          ? `I’ll keep ${newDepartment} in mind. What are you dealing with?`
+          : "I’m still missing that detail. Could you reply in a few words or pick one of the options above?",
+      });
+    }
+    return;
+  }
+  if (!latestPlan) return;
+  replyInput.value = "";
+  const updated = engine.reframe(state, text);
+  if (updated) {
+    state = updated;
+    showExchange(text, { text: "That changes the next step. I’ll update the guidance." });
+    render();
+    return;
+  }
+  showExchange(text, respond(text, state, latestPlan));
+}
+
+replyForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  handleReply(replyInput.value.trim());
+});
+replyInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter" && !event.shiftKey && !event.isComposing) {
+    event.preventDefault();
+    replyForm.requestSubmit();
+  }
+});
 
 form.addEventListener("submit", (event) => {
   event.preventDefault();

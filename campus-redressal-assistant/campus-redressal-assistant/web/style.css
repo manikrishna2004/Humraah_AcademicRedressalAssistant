@@ -200,3 +200,37 @@ dialog p, dialog form { margin-top: 12px; }
   .topic-mark { display: none; }
   .composer-footer .helper { max-width: 125px; }
 }
+
+.prompt-lead { display: block; margin-bottom: 5px; color: var(--muted); font-size: .91rem; }
+.prompt-question { display: block; color: var(--deep); font-weight: 700; }
+.follow-through:empty { display: none; }
+.follow-through { display: grid; gap: 13px; margin-top: 16px; }
+.follow-through .assistant > div { min-width: 0; }
+.reply-form {
+  position: sticky;
+  bottom: 8px;
+  z-index: 2;
+  display: grid;
+  gap: 6px;
+  margin-top: 16px;
+  padding: 10px;
+  border: 1px solid #cbdacf;
+  border-radius: 12px;
+  background: #f6faf5;
+  box-shadow: 0 6px 16px #243e2920;
+}
+.reply-form label { color: var(--deep); font-size: .87rem; font-weight: 720; }
+.reply-controls { display: flex; align-items: end; gap: 7px; }
+.reply-controls textarea { flex: 1; min-width: 0; min-height: 46px; max-height: 170px; padding: 8px 10px; background: #fff; }
+.reply-suggestions { display: flex; flex-wrap: wrap; gap: 6px; }
+.reply-suggestions:empty { display: none; }
+.reply-suggestions .choice { min-height: 34px; font-size: .83rem; padding: 5px 8px; }
+.email-draft, .companion-links { margin-top: 8px; }
+.email-draft { border: 1px solid #dce7df; border-radius: 9px; background: #f6faf6; padding: 9px 11px; }
+.draft-copy { white-space: pre-wrap; overflow-wrap: anywhere; font-size: .9rem; margin-bottom: 8px; }
+.email-draft .helper { margin-left: 8px; }
+.companion-links { display: flex; flex-wrap: wrap; gap: 4px 9px; font-size: .86rem; overflow-wrap: anywhere; }
+@media (max-width: 480px) {
+  .reply-controls textarea { font-size: 1rem; }
+  .reply-controls .primary { padding-inline: 12px; }
+}

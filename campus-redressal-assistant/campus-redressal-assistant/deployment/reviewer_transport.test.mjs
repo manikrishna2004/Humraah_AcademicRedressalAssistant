@@ -99,3 +99,42 @@ test("follow-ups stop at two and a hostel request receives the scoped fallback",
   assert.equal(plan(outside).supported, false);
   assert.deepEqual(plan(outside).rules, []);
 });
+
+test("typed clarification picks the office from an entire reply", () => {
+  const first = start("My faculty advisor isn't replying.");
+  const second = engine.interpretReply(first, engine.question(first), "I sent an email yesterday. I'm in CSE.");
+  assert.equal(second.sent, true);
+  assert.equal(engine.question(second), null);
+  assert.equal(plan(second).contacts[0].email, "cseoffi@cse.iitkgp.ac.in");
+  assert.equal(engine.interpretReply(first, engine.question(first), "What times?"), null);
+});
+
+test("typed topic reply keeps a specific grade procedure and remembers department", () => {
+  const first = start("I'm dealing with an academic problem.");
+  const context = engine.remember(first, "I'm from CSE.");
+  const second = engine.interpretReply(context, engine.question(context), "I want to see my mid sem script.");
+  assert.equal(second.department, "Computer Science and Engineering");
+  assert.equal(engine.question(second), null);
+  assert.equal(plan(second).issue, "Mid-sem answer script");
+});
+
+test("a later correction updates the existing contact without changing the issue", () => {
+  const first = start("My CSE faculty advisor hasn't replied. I already sent an email.");
+  const second = engine.reframe(first, "Actually I’m in Mechanical Engineering.");
+  assert.equal(second.query, first.query);
+  assert.equal(second.tag, first.tag);
+  assert.equal(plan(second).contacts[0].email, "mechoffice@mech.iitkgp.ac.in");
+  assert.equal(engine.reframe(first, "What if I haven't emailed yet?"), null);
+});
+
+test("the companion drafts a useful email and grounds visit and deadline replies", async () => {
+  const { respond, suggestions } = await import("../web/companion.js");
+  const state = start("I missed the suppli deadline.");
+  const result = plan(state);
+  const email = respond("What should I email them?", state, result);
+  assert.match(email.draft, /Subject: Supplementary registration/);
+  assert.match(email.text, /Academic Section/);
+  assert.match(respond("Can I go in person?", state, result).text, /Main Building.*confirm/);
+  assert.ok(respond("Where is the deadline?", state, result).links.some(({ url }) => url.includes("academic-calendar")));
+  assert.ok(suggestions(state, result).includes("Help me write the email"));
+});

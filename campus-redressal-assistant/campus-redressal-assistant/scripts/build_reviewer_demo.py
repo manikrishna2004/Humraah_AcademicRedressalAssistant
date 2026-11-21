@@ -34,7 +34,7 @@ def export_plans(data: Path) -> dict:
 
 def build(output: Path) -> None:
     output.mkdir(parents=True, exist_ok=True)
-    for name in ("index.html", "app.js", "style.css", "conversation.js"):
+    for name in ("index.html", "app.js", "style.css", "conversation.js", "companion.js"):
         shutil.copyfile(ROOT / "web" / name, output / name)
     for name in ("fonts", "assets"):
         shutil.copytree(ROOT / "web" / name, output / name, dirs_exist_ok=True)
