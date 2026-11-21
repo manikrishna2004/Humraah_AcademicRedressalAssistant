@@ -1,5 +1,5 @@
 import { createConversation } from "./conversation.js";
-import { getIntake, getPlan } from "./transport.js";
+import { getDirectory, getIntake, getPlan } from "./transport.js";
 
 const form = document.querySelector("#query-form");
 const input = document.querySelector("#query");
@@ -12,8 +12,14 @@ const current = document.querySelector("#current");
 const topics = document.querySelector("#topic-list");
 const error = document.querySelector("#error");
 const reset = document.querySelector("#reset");
-const sample = document.querySelector("#sample");
-const sampleBanner = document.querySelector("#sample-banner");
+const guide = document.querySelector("#guide");
+const guideNav = document.querySelector("#guide-nav");
+const directoryNav = document.querySelector("#directory-nav");
+const directory = document.querySelector("#directory");
+const directoryForm = document.querySelector("#directory-form");
+const directoryQuery = document.querySelector("#directory-query");
+const directoryStatus = document.querySelector("#directory-status");
+const directoryResults = document.querySelector("#directory-results");
 const dialog = document.querySelector("#how-dialog");
 
 const TOPICS = {
@@ -26,7 +32,8 @@ const TOPICS = {
 let engine;
 let state;
 let turns = [];
-let mode = "campus";
+let directoryRevision = 0;
+let directoryDebounce;
 let generation = 0;
 
 function node(tag, className, text) {
@@ -70,7 +77,7 @@ function clear(text = "", focus = true) {
 }
 
 function start(query, topic = null) {
-  state = engine.start(query, mode, topic);
+  state = engine.start(query, topic);
   turns = [];
   display(true);
   render();
@@ -165,25 +172,61 @@ function link(label, url, className) {
   return anchor;
 }
 
-function renderContacts(contacts) {
-  const panel = node("section", "plan-panel");
-  panel.append(node("h3", "", "Who to contact"));
-  for (const contact of contacts) {
-    const item = node("div", "source-item");
-    item.append(node("p", "contact-role", contact.role));
-    for (const text of [contact.name, contact.office, contact.office_hours].filter(Boolean)) {
-      item.append(node("p", "", text));
-    }
-    if (contact.email && mode === "campus") {
-      item.append(link(contact.email, `mailto:${contact.email}`, "contact-source"));
-    } else if (contact.email) {
-      item.append(node("p", "contact-source", contact.email));
-    }
-    if (contact.url) item.append(link(contact.detail, contact.url, "contact-source"));
-    else if (contact.detail) item.append(node("p", "helper", contact.detail));
-    panel.append(item);
+function renderContact(contact, standalone = false) {
+  const item = node("article", standalone ? "directory-card" : "contact-card");
+  item.append(node(standalone ? "h2" : "h4", "contact-role", contact.role));
+  item.append(node("p", "contact-detail", contact.detail));
+  if (contact.office) item.append(node("p", "contact-where", contact.office));
+  if (contact.office || contact.office_hours) {
+    item.append(node("p", "contact-when", contact.office_hours || "Visiting hours to confirm"));
   }
+  if (contact.visit_note) item.append(node("p", "visit-note", contact.visit_note));
+
+  const channels = node("div", "contact-channels");
+  if (contact.phone) {
+    channels.append(link(contact.phone, `tel:${contact.phone.replace(/[^+0-9]/g, "")}`, "contact-source"));
+  }
+  if (contact.email) channels.append(link(contact.email, `mailto:${contact.email}`, "contact-source"));
+  if (channels.childElementCount) item.append(channels);
+  const sources = node("div", "contact-references");
+  sources.append(link(contact.source_label, contact.url, "contact-source"));
+  if (contact.location_url) sources.append(link("Location reference", contact.location_url, "contact-source"));
+  item.append(sources);
+  return item;
+}
+
+function renderContacts(contacts) {
+  const panel = node("section", "plan-panel plan-contacts");
+  panel.append(node("h3", "", "Who to contact"));
+  panel.append(...contacts.map((contact) => renderContact(contact)));
   return panel;
+}
+
+async function searchDirectory() {
+  const revision = ++directoryRevision;
+  directoryStatus.textContent = "Loading campus contacts…";
+  directoryResults.replaceChildren();
+  try {
+    const contacts = await getDirectory(directoryQuery.value);
+    if (revision !== directoryRevision) return;
+    directoryStatus.textContent = contacts.length
+      ? `${contacts.length} ${contacts.length === 1 ? "contact" : "contacts"}`
+      : "No matching contacts. Try an office name or department abbreviation.";
+    directoryResults.append(...contacts.map((contact) => renderContact(contact, true)));
+  } catch (failure) {
+    if (revision === directoryRevision) directoryStatus.textContent = failure.message;
+  }
+}
+
+function showDirectory(open) {
+  guide.hidden = open;
+  directory.hidden = !open;
+  (open ? guideNav : directoryNav).removeAttribute("aria-current");
+  (open ? directoryNav : guideNav).setAttribute("aria-current", "page");
+  if (open) {
+    focusLatest(directory.querySelector("h1"));
+    searchDirectory();
+  }
 }
 
 function renderSources(title, items, expanded) {
@@ -218,8 +261,8 @@ function renderPlan(plan) {
       panel.append(node("strong", "", notice.title), node("p", "", notice.text));
       body.append(panel);
     }
-    if (plan.rules.length) body.append(renderSources(mode === "sample" ? "Sample policy" : "Official policy", plan.rules, true));
-    if (plan.tips.length) body.append(renderSources("Sample senior tips", plan.tips, false));
+    if (plan.rules.length) body.append(renderSources("Official policy", plan.rules, true));
+    if (plan.tips.length) body.append(renderSources("Senior fundae · Fictional examples", plan.tips, false));
     article.append(body);
   }
   current.replaceChildren(article);
@@ -264,13 +307,16 @@ input.addEventListener("keydown", (event) => {
   }
 });
 reset.addEventListener("click", () => clear());
-sample.addEventListener("click", () => {
-  mode = mode === "campus" ? "sample" : "campus";
-  const sampleActive = mode === "sample";
-  sample.textContent = sampleActive ? "Return to campus sources" : "Try sample data";
-  sample.setAttribute("aria-pressed", String(sampleActive));
-  sampleBanner.hidden = !sampleActive;
-  clear();
+guideNav.addEventListener("click", () => showDirectory(false));
+directoryNav.addEventListener("click", () => showDirectory(true));
+directoryForm.addEventListener("submit", (event) => {
+  event.preventDefault();
+  clearTimeout(directoryDebounce);
+  searchDirectory();
+});
+directoryQuery.addEventListener("input", () => {
+  clearTimeout(directoryDebounce);
+  directoryDebounce = setTimeout(searchDirectory, 180);
 });
 document.querySelector("#how-button").addEventListener("click", () => dialog.showModal());
 

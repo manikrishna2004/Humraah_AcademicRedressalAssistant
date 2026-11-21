@@ -19,7 +19,7 @@ import asyncio
 from src.academic_intake import normalize_query
 from src.config import settings
 from src.state import RedressalState
-from src.stores import directory_store, rulebook_store, senior_experience_store
+from src.stores import campus_directory, directory_store, rulebook_store, senior_experience_store
 
 
 async def retriever_node(state: RedressalState) -> dict:
@@ -31,19 +31,21 @@ async def retriever_node(state: RedressalState) -> dict:
     tags = ()
     if mode and tag:
         query = normalize_query(query)
-        tags = ("mid_sem_review", "end_sem_appeal") if tag == "grade_review" else (tag,)
+        tags = ("mid_sem_review", "end_sem_appeal") if tag == "grade_review" and not state.get("guided_resolution") else (tag,)
 
     if mode == "campus":
-        rules = await asyncio.to_thread(
-            rulebook_store.query_rulebook, query, department, top_k, tags=tags, dataset=mode
+        directory_task = asyncio.to_thread(
+            campus_directory.academic_contacts, tag, department, state.get("formal_email_sent")
         )
-        return {"retrieved_rules": rules, "retrieved_directory": [], "retrieved_senior_fundae": []}
-
-    directory_task = asyncio.to_thread(directory_store.query_directory, department)
-    senior_task = asyncio.to_thread(
-        senior_experience_store.query_senior_experience, query, department, top_k,
-        tags=tags, program=state.get("degree_program") if mode else None,
-    )
+        senior_task = asyncio.to_thread(
+            senior_experience_store.query_senior_experience, query, department, top_k, tags=tags, campus=True
+        )
+    else:
+        directory_task = asyncio.to_thread(directory_store.query_directory, department)
+        senior_task = asyncio.to_thread(
+            senior_experience_store.query_senior_experience, query, department, top_k,
+            tags=tags, program=state.get("degree_program") if mode else None,
+        )
     rulebook_task = asyncio.to_thread(
         rulebook_store.query_rulebook, query, department, top_k, tags=tags, dataset=mode
     )

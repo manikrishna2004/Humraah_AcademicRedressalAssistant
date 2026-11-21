@@ -16,7 +16,7 @@ export function createConversation(intake) {
   const aliases = intake.aliases.map(([pattern, replacement, flags]) => [new RegExp(pattern, flags), replacement]);
   const intents = intake.intents.map(([pattern, tag]) => [new RegExp(pattern, "i"), tag]);
   const outOfDomain = new RegExp(intake.outOfDomain, "i");
-  const sampleDepartments = new Set(intake.departments);
+  const departments = intake.departments;
   const campusTopicNames = new Set(ISSUE_CHOICES.map(([key]) => key));
   const gradeHint = /\b(?:marks?|grades?|answer script|recheck|marking)\b/i;
   const advisorHint = /(?:faculty advisor|\bhod\b).{0,45}(?:reply|repli|respond|reached|ignor|answer)|unresponsive/i;
@@ -49,12 +49,11 @@ export function createConversation(intake) {
     };
   }
 
-  function start(query, mode, topic = null) {
+  function start(query, topic = null) {
     const state = classify(query);
     return {
       ...state,
       query,
-      mode,
       topic,
       tag: topic && campusTopicNames.has(topic) ? topic : state.tag,
       turns: 0,
@@ -73,20 +72,17 @@ export function createConversation(intake) {
     if (state.tag === "escalation" && !state.advisorAnswered) {
       return {
         key: "sent",
-        text: state.mode === "sample"
-          ? "In this example, have you already emailed your advisor and waited 48 hours?"
-          : "Have you already emailed your faculty advisor about this?",
+        text: "Have you already emailed your faculty advisor about this?",
         choices: ADVISOR_CHOICES,
       };
     }
     if (
-      state.mode === "sample" && !state.departmentAnswered
-      && ["attendance_waiver", "escalation", "mid_sem_review", "end_sem_appeal"].includes(state.tag)
+      !state.departmentAnswered && (state.tag === "attendance_waiver" || (state.tag === "escalation" && state.sent === true))
     ) {
       return {
         key: "department",
-        text: "Which department should I use for this sample?",
-        choices: [...sampleDepartments].map((name) => [name, name]).concat([["unknown", "I’m not sure"]]),
+        text: "Which department office should I look up?",
+        choices: departments.map((name) => [name, name]).concat([["unknown", "I’m not sure"]]),
         dropdown: true,
       };
     }
@@ -112,9 +108,9 @@ export function createConversation(intake) {
   }
 
   function planInput(state) {
-    const { query, mode, tag, department, degree_program, sent } = state;
+    const { query, tag, department, degree_program, sent } = state;
     return {
-      query, mode, department, degree_program, sent,
+      query, department, degree_program, sent,
       tag: tag && tag !== "other" ? tag : null,
     };
   }

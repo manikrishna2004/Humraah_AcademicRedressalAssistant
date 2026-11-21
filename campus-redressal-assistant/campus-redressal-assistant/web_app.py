@@ -18,7 +18,7 @@ from pydantic import BaseModel, ConfigDict, StringConstraints
 from src.academic_intake import ISSUES, browser_intake
 from src.graph import build_graph
 from src.llm import DEGREE_PROGRAMS, DEPARTMENTS
-from src.stores import directory_store, rulebook_store, senior_experience_store
+from src.stores import campus_directory, rulebook_store, senior_experience_store
 
 ROOT = Path(__file__).resolve().parent
 MAX_PENDING = 128
@@ -26,7 +26,7 @@ SESSION_SECONDS = 20 * 60
 
 FIELD_OPTIONS = {"department": DEPARTMENTS, "degree_program": DEGREE_PROGRAMS}
 FIELD_LABELS = {"department": "Department", "degree_program": "Degree program"}
-MODE = Literal["campus", "sample"]
+MODE = Literal["campus"]
 
 
 class StartRequest(BaseModel):
@@ -59,9 +59,9 @@ class Pending:
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     data = ROOT / "data"
-    directory_store.load_csv(data / "faculty_directory.csv", data / "student_reps.csv")
-    senior_experience_store.load_json(data / "senior_experiences.json")
-    rulebook_store.load_json(data / "rulebook_chunks.json", data / "campus_sources.json")
+    campus_directory.load_campus(data / "campus_directory.json")
+    senior_experience_store.load_json(data / "campus_senior_tips.json", campus=True)
+    rulebook_store.load_json(data / "campus_sources.json")
     app.state.checkpointer = MemorySaver()
     app.state.graph = build_graph(app.state.checkpointer)
     app.state.pending = {}
@@ -77,6 +77,11 @@ async def prevent_session_caching(request, call_next):
     if request.url.path.startswith("/api/"):
         response.headers["Cache-Control"] = "no-store"
     return response
+
+
+@app.get("/api/directory")
+def directory(q: str = ""):
+    return {"contacts": campus_directory.search_contacts(q[:100])}
 
 
 @app.get("/api/options")

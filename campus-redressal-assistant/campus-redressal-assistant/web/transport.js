@@ -12,3 +12,9 @@ export function getPlan(input) {
     body: JSON.stringify(input),
   }).then(read);
 }
+
+export async function getDirectory(term) {
+  const path = new URL("./api/directory", window.location.href);
+  path.searchParams.set("q", term);
+  return (await read(await fetch(path))).contacts;
+}

@@ -14,6 +14,7 @@ from __future__ import annotations
 from src.academic_plan import academic_plan
 from src.llm import get_llm
 from src.state import RedressalState
+from src.stores import campus_directory
 
 # Chunks scoring below this are too weak to be worth showing in the final
 # answer -- reused by scripts/evaluate.py's groundedness check so the eval
@@ -165,6 +166,13 @@ def render_markdown(bundle: dict) -> str:
 
 def synthesizer_node(state: RedressalState) -> dict:
     if state.get("academic_mode"):
+        if not state.get("guided_resolution") and (
+            state.get("formal_email_sent") is not None or state.get("ambiguity_resolved")
+        ):
+            tag = state.get("ambiguity_resolved") or state.get("subcategory")
+            state = {**state, "retrieved_directory": campus_directory.academic_contacts(
+                tag, state.get("department"), state.get("formal_email_sent")
+            )}
         return {"action_plan": academic_plan(state)}
     llm = get_llm()
     bundle = _build_context_bundle(state)

@@ -18,22 +18,22 @@ from src.stores.chroma_client import get_client
 _COLLECTION_NAME = "senior_experience"
 
 
-def _collection():
+def _collection(campus: bool = False):
     return get_client().get_or_create_collection(
-        name=_COLLECTION_NAME,
+        name=f"{_COLLECTION_NAME}_campus_examples" if campus else _COLLECTION_NAME,
         embedding_function=get_embedding_function(),
         metadata={"hnsw:space": "cosine"},
     )
 
 
-def load_json(path: str | Path) -> None:
+def load_json(path: str | Path, *, campus: bool = False) -> None:
     """
     Ingest data/senior_experiences.json -- a list of objects shaped like:
         {"category": "...", "subcategory": "...", "department": "...",
          "degree_program": "...", "summary": "..."}
     """
     entries: list[dict[str, Any]] = json.loads(Path(path).read_text(encoding="utf-8"))
-    col = _collection()
+    col = _collection(campus)
 
     ids = [f"senior-{i}" for i in range(len(entries))]
     documents = [e["summary"] for e in entries]
@@ -49,7 +49,7 @@ def load_json(path: str | Path) -> None:
     ]
 
     # idempotent re-ingest
-    existing = col.get(ids=ids)
+    existing = col.get(include=[])
     if existing["ids"]:
         col.delete(ids=existing["ids"])
     col.add(ids=ids, documents=documents, metadatas=metadatas)
@@ -62,11 +62,12 @@ def query_senior_experience(
     *,
     tags: tuple[str, ...] = (),
     program: str | None = None,
+    campus: bool = False,
 ) -> list[dict]:
-    col = _collection()
+    col = _collection(campus)
     filters = []
     if department:
-        filters.append({"department": department})
+        filters.append({"department": {"$in": [department, "General"]}} if campus and department != "General" else {"department": department})
     if tags:
         filters.append({"subcategory": {"$in": list(tags)}})
     if program:

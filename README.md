@@ -31,14 +31,15 @@ Open **http://127.0.0.1:8000**. The default web run uses the existing
 LangGraph workflow, local ChromaDB and SQLite, and the deterministic mock
 model. It builds its indexes at startup without an API key or Ollama.
 
-- **Campus sources** covers supplementary exams, grade reviews, attendance
-  questions and advisor follow-ups. It links to IIT Kharagpur's handbook and
-  published guidance. Some grade rules apply only to admissions through
-  2023, as the citations indicate. Confirm current deadlines and cohort
-  rules with the institute. Verified peer accounts are still pending.
-- **Sample mode** uses the repository's fictional policy, peer and directory
-  records. To try a source discrepancy, ask about an attendance waiver,
-  then pick Computer Science and Engineering and UG 4-Year B.Tech.
+- The campus guide covers supplementary exams, grade reviews, attendance
+  and advisor follow-ups. It links to institute handbooks, academic calendar,
+  published workflow pages and grievance guidelines. Some older grade rules
+  apply to admissions through 2023, as the citations indicate.
+- Campus Directory and the contact cards query the same SQLite schema.
+  `data/campus_directory.json` records source links, published contacts and
+  verified hours, with appointment notes where office schedules are absent.
+- `data/campus_senior_tips.json` contains fictional examples. The web app labels
+  these next to the tips. Historical mock data serves the CLI evaluation.
 - The browser keeps one conversation in the tab and accepts up to two
   follow-ups. Students can edit their question or an earlier answer. The
   local app runs the resolved request through LangGraph and restricts
@@ -56,8 +57,8 @@ through `scripts/evaluate.py`.
 The reviewer build uses the same interface, topic taxonomy and citations. It
 compiles action plans from the repository's source records. The browser
 classifies questions and handles follow-ups locally, then selects the plan
-for the student's answers. The local Python app runs the LangGraph,
-ChromaDB and SQLite pipeline.
+for the student's answers. The hosted build queries the exported SQLite file
+with sql.js. The local Python app runs LangGraph, ChromaDB and native SQLite.
 
 To rebuild and test the reviewer assets from the app directory:
 
@@ -65,6 +66,9 @@ To rebuild and test the reviewer assets from the app directory:
 python scripts/build_reviewer_demo.py --output dist
 node deployment/reviewer_transport.test.mjs dist/demo-data.json
 ```
+
+The campus photo is by [Bubamannaiitkgp11 on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bubai_Manna_(IIT_Kharagpur_main_building).jpg).
+The resized WebP asset is available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
 ## Why this exists
 

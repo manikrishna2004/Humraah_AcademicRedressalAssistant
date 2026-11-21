@@ -55,5 +55,29 @@
     "source_label": "Faculty Advisor Handbook · Medical Leave (UG, PG)",
     "source_url": "https://student.iitkgp.ac.in/docs/STUDENTCOPY_FACULTYADVISOR_IITKGP.pdf#page=22",
     "text": "The handbook documents medical-leave workflows. Ask your faculty advisor whether the medical-leave process is relevant to your attendance issue and which documents your department needs."
+  },
+  {
+    "subcategory": "supplementary_exam",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "IIT KGP · Academic Calendar 2026–27",
+    "source_url": "https://www.iitkgp.ac.in/academic-calendar-ug",
+    "text": "Check the Senate-approved calendar and any newer ERP notices for the registration and examination dates for your session."
+  },
+  {
+    "subcategory": "grade_review",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "IIT KGP · Academic Calendar",
+    "source_url": "https://www.iitkgp.ac.in/academic-calendar-ug",
+    "text": "Use the calendar to identify the examination dates for your session. Ask your course instructor for the relevant script-viewing or grade review process."
+  },
+  {
+    "subcategory": "escalation",
+    "department": "General",
+    "dataset": "campus",
+    "source_label": "IIT KGP · Students Grievance Redressal Committee",
+    "source_url": "https://www.iitkgp.ac.in/sgr-committee",
+    "text": "The institute publishes a separate formal complaints and redressal procedure. Use the published guidelines if your concern needs a formal route."
   }
 ]

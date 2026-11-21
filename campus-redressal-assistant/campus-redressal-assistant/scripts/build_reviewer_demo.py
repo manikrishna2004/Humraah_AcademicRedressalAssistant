@@ -1,9 +1,7 @@
-"""Export a self-contained browser build for a public prototype review."""
+"""Compile the campus guidance and actual SQLite directory for public review."""
 from __future__ import annotations
 
 import argparse
-import csv
-import itertools
 import json
 import shutil
 import sys
@@ -14,91 +12,45 @@ sys.path.insert(0, str(ROOT))
 
 from src.academic_intake import ISSUES, browser_intake
 from src.academic_plan import academic_plan
-from src.llm import DEPARTMENTS, DEGREE_PROGRAMS
+from src.stores.campus_directory import browser_directory, load_campus
 
 
-def load_sources():
-    data = ROOT / "data"
-    sample_rules = json.loads((data / "rulebook_chunks.json").read_text())
-    campus_rules = json.loads((data / "campus_sources.json").read_text())
-    rules = {
-        "sample": [
-            {"text": row["text"], "metadata": row} for row in sample_rules
-        ],
-        "campus": [
-            {"text": row["text"], "metadata": row} for row in campus_rules
-        ],
-    }
-    tips = [
-        {"text": row["summary"], "metadata": row, "source_id": f"senior-{index}"}
-        for index, row in enumerate(json.loads((data / "senior_experiences.json").read_text()))
-    ]
-    with (data / "faculty_directory.csv").open(newline="", encoding="utf-8") as file:
-        directory = list(csv.DictReader(file))
-    return rules, tips, directory
-
-
-def export_plans():
-    rules, tips, directory = load_sources()
-    templates = []
-    template_ids = {}
-    index = {}
-
-    for mode, tag, dept, program in itertools.product(
-        rules, ISSUES, ("", *DEPARTMENTS), ("", *DEGREE_PROGRAMS),
-    ):
-        selected_rules = [
-            hit for hit in rules[mode]
-            if hit["metadata"]["subcategory"] == tag
-            and hit["metadata"]["department"] in {"General", dept}
-        ]
-        selected_tips = [
-            hit for hit in tips
-            if mode == "sample"
-            and hit["metadata"]["subcategory"] == tag
-            and hit["metadata"]["department"] == dept
-            and (not program or hit["metadata"]["degree_program"] == program)
-        ]
-        selected_contacts = [
-            contact for contact in directory
-            if mode == "sample" and contact["department"] == dept
-        ]
-        for sent in ("yes", "no", "") if tag == "escalation" else ("",):
-            plan = academic_plan({
-                "academic_mode": mode,
+def export_plans(data: Path) -> dict:
+    rules = json.loads((data / "campus_sources.json").read_text(encoding="utf-8"))
+    tips = json.loads((data / "campus_senior_tips.json").read_text(encoding="utf-8"))
+    plans = {}
+    for tag in ISSUES:
+        chosen_rules = [{"text": row["text"], "metadata": row} for row in rules if row["subcategory"] == tag]
+        chosen_tips = [{"text": row["summary"]} for row in tips if row["subcategory"] == tag]
+        for status in ("yes", "no", "unknown") if tag == "escalation" else ("",):
+            plans[f"{tag}|{status}"] = academic_plan({
                 "subcategory": tag,
-                "formal_email_sent": (sent == "yes") if sent else None,
-                "retrieved_rules": selected_rules,
-                "retrieved_senior_fundae": selected_tips,
-                "retrieved_directory": selected_contacts,
-                "confidence_score": 1 if selected_rules else 0,
+                "formal_email_sent": None if status in {"", "unknown"} else status == "yes",
+                "retrieved_rules": chosen_rules,
+                "retrieved_senior_fundae": chosen_tips,
             })
-            plan.pop("department")
-            serialized = json.dumps(plan, sort_keys=True)
-            if serialized not in template_ids:
-                template_ids[serialized] = len(templates)
-                templates.append(plan)
-            index["|".join((mode, tag, dept, program, sent))] = template_ids[serialized]
-
-    return index, templates
+    return plans
 
 
-def build(output: Path):
+def build(output: Path) -> None:
     output.mkdir(parents=True, exist_ok=True)
     for name in ("index.html", "app.js", "style.css", "conversation.js"):
         shutil.copyfile(ROOT / "web" / name, output / name)
-    shutil.copytree(ROOT / "web" / "fonts", output / "fonts", dirs_exist_ok=True)
+    for name in ("fonts", "assets"):
+        shutil.copytree(ROOT / "web" / name, output / name, dirs_exist_ok=True)
+    shutil.copytree(ROOT / "deployment" / "vendor", output / "vendor", dirs_exist_ok=True)
     shutil.copyfile(ROOT / "deployment" / "reviewer_transport.mjs", output / "transport.js")
 
-    index, templates = export_plans()
-    data = {
+    data = ROOT / "data"
+    load_campus(data / "campus_directory.json", output / "campus-directory.sqlite")
+    payload = {
         **browser_intake(),
-        "fallback": academic_plan({"academic_mode": "campus"}),
-        "index": index,
-        "plans": templates,
+        "fallback": academic_plan({}),
+        "plans": export_plans(data),
+        "directory": browser_directory(),
     }
     (output / "demo-data.json").write_text(
-        json.dumps(data, ensure_ascii=False, separators=(",", ":")), encoding="utf-8",
+        json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8",
     )
 
 

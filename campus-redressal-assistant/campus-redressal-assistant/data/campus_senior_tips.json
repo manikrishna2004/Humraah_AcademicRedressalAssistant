@@ -1,0 +1,9 @@
+[
+  {"category":"Academic","subcategory":"supplementary_exam","department":"General","summary":"Keep the ERP notice and any registration error screenshot together. In one message, mention the course code, your batch and the date you tried to apply."},
+  {"category":"Academic","subcategory":"supplementary_exam","department":"General","summary":"Before walking to an office, check whether the issue is permission to apply or an ERP error. That distinction helps you pick the right contact."},
+  {"category":"Academic","subcategory":"grade_review","department":"General","summary":"Ask for an explanation of one specific discrepancy first. A short note naming the assessment is easier for an instructor to act on."},
+  {"category":"Academic","subcategory":"mid_sem_review","department":"General","summary":"Put the subject code and exam name in the email subject. Ask for the next script-viewing slot, then note the question numbers you want to discuss."},
+  {"category":"Academic","subcategory":"end_sem_appeal","department":"General","summary":"Write down what you think is wrong and where you spotted it. Keep a copy of your original message so you can follow up in the same thread."},
+  {"category":"Academic","subcategory":"attendance_waiver","department":"General","summary":"Prepare a short list of affected class dates and courses before talking to your advisor. Ask which documents to share and where to submit them."},
+  {"category":"Academic","subcategory":"escalation","department":"General","summary":"Keep the original subject line when following up. Put the decision you need and the deadline near the top of the message."}
+]
