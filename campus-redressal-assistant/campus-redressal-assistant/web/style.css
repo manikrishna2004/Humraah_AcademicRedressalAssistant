@@ -45,10 +45,10 @@ button:disabled { cursor: default; opacity: .62; }
 .quiet, .outline { border: 1px solid transparent; background: transparent; color: var(--green); padding: 8px 10px; border-radius: 7px; font-weight: 680; font-size: .9rem; }
 .quiet:hover, .outline:hover { background: var(--wash); }
 .outline { border-color: #bfcfbd; }
-.intro { padding: 52px 0 29px; max-width: 710px; }
+.intro { padding: 52px 0 29px; max-width: 800px; }
 .context-label { display: flex; align-items: center; gap: 8px; margin-bottom: 13px; color: var(--green); font-size: .89rem; font-weight: 720; letter-spacing: .012em; }
 .context-label span { width: 7px; height: 7px; border-radius: 50%; background: #748e63; }
-h1 { font: 400 clamp(3.55rem, 7.2vw, 5.75rem)/.94 var(--serif); letter-spacing: -.028em; color: var(--deep); }
+h1 { font: 400 clamp(3.55rem, 7vw, 5.25rem)/.94 var(--serif); text-wrap: balance; letter-spacing: -.028em; color: var(--deep); }
 .intro-copy { max-width: 450px; color: var(--muted); margin-top: 15px; }
 .workspace { display: grid; grid-template-columns: minmax(0, 2.2fr) minmax(245px, 1fr); align-items: start; gap: 26px; }
 .help-desk { min-width: 0; }

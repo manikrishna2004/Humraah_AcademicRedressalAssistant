@@ -118,7 +118,7 @@ def academic_plan(state: RedressalState) -> dict:
         if not rules or state.get("confidence_score", 0) < 0.35:
             notices.append({
                 "title": "Limited source coverage",
-                "text": "Confirm the applicable procedure and deadlines with the contact below.",
+                "text": "Confirm the applicable procedure and deadlines with the listed contact.",
             })
     else:
         next_step = (
