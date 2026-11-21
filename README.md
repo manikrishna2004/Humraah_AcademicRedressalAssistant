@@ -51,6 +51,21 @@ original graph checks with `python -m pytest -q` after installing
 `requirements-web.txt` and `pytest`. The 16-query CLI eval remains available
 through `scripts/evaluate.py`.
 
+### Public reviewer build
+
+The reviewer build uses the same interface, topic taxonomy and citations. It
+compiles action plans from the repository's source records. The browser
+classifies questions and handles follow-ups locally, then selects the plan
+for the student's answers. The local Python app runs the LangGraph,
+ChromaDB and SQLite pipeline.
+
+To rebuild and test the reviewer assets from the app directory:
+
+```bash
+python scripts/build_reviewer_demo.py --output dist
+node deployment/reviewer_transport.test.mjs dist/demo-data.json
+```
+
 ## Why this exists
 
 Most "RAG chatbot" demos retrieve-then-generate in one shot. Real

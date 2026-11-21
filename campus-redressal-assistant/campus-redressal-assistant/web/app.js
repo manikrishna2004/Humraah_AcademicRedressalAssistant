@@ -1,3 +1,5 @@
+import { request } from "./transport.js";
+
 const queryForm = document.querySelector("#query-form");
 const query = document.querySelector("#query");
 const modePicker = document.querySelector("#mode-picker");
@@ -36,7 +38,7 @@ function showStatus(message = "", isError = false) {
 }
 
 async function api(path, body) {
-  const response = await fetch(path, body ? {
+  const response = await request(path, body ? {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
@@ -68,7 +70,7 @@ function renderTopics(scenarios) {
 
 function clearGuidance() {
   if (session) {
-    fetch(`/api/guidance/${session}`, { method: "DELETE" }).catch(() => {});
+    request(`/api/guidance/${session}`, { method: "DELETE" }).catch(() => {});
     session = null;
   }
   guidance.replaceChildren();

@@ -27,7 +27,7 @@ SCENARIOS = (
 _ALIASES = [
     (r"\b(?:suppli(?:es)?|supple(?:mentary)?|back paper)(?:\s+exam(?:ination)?s?)?\b", "supplementary exam"),
     (r"\b(?:cse|comp sci)\b", "Computer Science and Engineering"),
-    (r"\bmech\b|(?-i:\bME\b)", "Mechanical Engineering"),
+    (r"\bmech\b", "Mechanical Engineering"),
     (r"\bee\b", "Electrical Engineering"),
     (r"\bchem engg?\b", "Chemical Engineering"),
     (r"\bb\s*tech\b|\bbtech\b", "B.Tech"),
@@ -49,6 +49,7 @@ class AcademicIntent(BaseModel):
 
 
 def normalize_query(query: str) -> str:
+    query = re.sub(r"\bME\b", "Mechanical Engineering", query)
     for pattern, replacement in _ALIASES:
         query = re.sub(pattern, replacement, query, flags=re.I)
     return query

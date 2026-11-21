@@ -66,16 +66,19 @@ def _extract_department(query: str) -> str | None:
     return None
 
 
+PROGRAM_HINTS = (
+    ("UG-PG 5-Year Dual Degree", ("dual degree", "5-year", "5 year")),
+    ("UG 4-Year B.Tech", ("b.tech", "4-year", "4 year", "undergrad")),
+    ("M.Tech", ("m.tech", "masters")),
+    ("PhD", ("phd",)),
+)
+
+
 def _extract_program(query: str) -> str | None:
-    q = query.lower()
-    if "dual degree" in q or "5-year" in q or "5 year" in q:
-        return "UG-PG 5-Year Dual Degree"
-    if "b.tech" in q or "4-year" in q or "4 year" in q or "undergrad" in q:
-        return "UG 4-Year B.Tech"
-    if "m.tech" in q or "masters" in q:
-        return "M.Tech"
-    if "phd" in q:
-        return "PhD"
+    query = query.lower()
+    for program, hints in PROGRAM_HINTS:
+        if any(hint in query for hint in hints):
+            return program
     return None
 
 
