@@ -1,7 +1,7 @@
 # Humraah held-out chat evaluation
 
 These six conversations were written separately from the indexed policies
-and fictional senior examples. The evaluator sends ordinary text through
+and synthetic senior tips. The evaluator sends ordinary text through
 `/api/chat/turn` and checks the question, resulting action, contact source and
 whether any correction continues to the next turn.
 

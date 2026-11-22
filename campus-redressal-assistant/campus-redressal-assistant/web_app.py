@@ -146,7 +146,7 @@ def discard_chat(session: UUID):
 
 
 @app.get("/sources/senior-fundae.json")
-def fictional_sources():
+def prototype_tip_sources():
     return FileResponse(ROOT / "data" / "campus_senior_tips.json", media_type="application/json")
 
 

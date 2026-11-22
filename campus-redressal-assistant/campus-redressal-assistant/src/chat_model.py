@@ -7,7 +7,7 @@ Issue = Literal[
     "supplementary_exam", "grade_review", "mid_sem_review", "end_sem_appeal",
     "attendance_waiver", "escalation", "other",
 ]
-Intent = Literal["describe", "switch", "draft", "contact", "visit", "deadline", "no_reply", "thanks"]
+Intent = Literal["describe", "switch", "draft", "contact", "visit", "deadline", "source", "no_reply", "thanks"]
 Program = Literal["UG 4-Year B.Tech", "UG-PG 5-Year Dual Degree", "M.Tech", "PhD"]
 Slot = Literal["issue", "department", "cohort", "deadline", "actions_taken"]
 

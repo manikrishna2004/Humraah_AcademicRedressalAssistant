@@ -73,7 +73,7 @@ test("attendance asks for a department and returns its real office and labeled e
   const result = plan(state);
   assert.equal(result.contacts[1].email, "cseoffi@cse.iitkgp.ac.in");
   assert.match(result.contacts[1].url, /comdir\.pdf#page=32/);
-  assert.equal(result.tips[0].label, "Fictional example for the prototype");
+  assert.equal(result.tips[0].label, "Prototype example");
 });
 
 test("search runs on the deployed SQLite file and preserves unknown visiting hours", () => {

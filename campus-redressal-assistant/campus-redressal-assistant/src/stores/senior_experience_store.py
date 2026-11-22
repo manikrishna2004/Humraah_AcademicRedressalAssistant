@@ -40,6 +40,7 @@ def load_json(path: str | Path, *, campus: bool = False) -> None:
     metadatas = [
         {
             "category": e.get("category", ""),
+            "title": e.get("title", ""),
             "subcategory": e.get("subcategory", ""),
             "department": e.get("department", ""),
             "degree_program": e.get("degree_program", ""),

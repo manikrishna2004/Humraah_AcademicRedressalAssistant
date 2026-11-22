@@ -58,7 +58,10 @@ def _rule(hit: RetrievedChunk) -> dict:
 
 
 def _tip(hit: RetrievedChunk) -> dict:
-    return _claim("senior_fundae", hit["text"], "Fictional example for the prototype", DEMO_TIPS_URL, None)
+    return {
+        **_claim("senior_fundae", hit["text"], "Prototype example", DEMO_TIPS_URL, None),
+        "title": hit.get("metadata", {}).get("title") or None,
+    }
 
 
 def directory_claim(contact: dict) -> dict:
@@ -74,7 +77,7 @@ def academic_plan(state: RedressalState) -> dict:
     tag = state.get("ambiguity_resolved") or state.get("subcategory")
     department = state.get("department")
     rules = [_rule(hit) for hit in state.get("retrieved_rules", [])][:3]
-    tips = [_tip(hit) for hit in state.get("retrieved_senior_fundae", [])[:2]]
+    tips = [_tip(hit) for hit in state.get("retrieved_senior_fundae", [])[:4]]
     notices = []
     contacts = [directory_claim(contact) for contact in state.get("retrieved_directory", []) if contact.get("id")]
     supported = bool(tag and tag in ISSUES)

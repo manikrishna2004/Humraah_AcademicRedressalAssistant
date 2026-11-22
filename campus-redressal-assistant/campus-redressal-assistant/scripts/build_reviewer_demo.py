@@ -21,7 +21,7 @@ def export_plans(data: Path) -> dict:
     plans = {}
     for tag in ISSUES:
         chosen_rules = [{"text": row["text"], "metadata": row} for row in rules if row["subcategory"] == tag]
-        chosen_tips = [{"text": row["summary"]} for row in tips if row["subcategory"] == tag]
+        chosen_tips = [{"text": row["summary"], "metadata": row} for row in tips if row["subcategory"] == tag]
         for status in ("yes", "no", "unknown") if tag == "escalation" else ("",):
             plans[f"{tag}|{status}"] = academic_plan({
                 "subcategory": tag,

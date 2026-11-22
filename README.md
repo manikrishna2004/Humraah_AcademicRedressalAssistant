@@ -37,14 +37,15 @@ model. It builds its indexes at startup without an API key or Ollama.
 - Campus Directory and the contact cards query the same SQLite schema.
   `data/campus_directory.json` records source links, published contacts and
   verified hours, with appointment notes where office schedules are absent.
-- `data/campus_senior_tips.json` contains fictional examples. The web app labels
-  these next to the tips. Historical mock data serves the CLI evaluation.
+- `data/campus_senior_tips.json` contains 24 synthetic tips across six
+  academic procedures. The web app groups them as **Senior tips**
+  with a **Prototype examples** label. Historical mock data serves the CLI evaluation.
 - `POST /api/chat/turn` stores a short-lived session on the server. Each
   message can add or correct the issue, department, cohort, deadline or
   actions already taken. The app asks one question when the answer changes
   the guidance. Students can answer in their own words, revise an answer,
   ask where to go, copy an email draft, or switch issues.
-- Policy, directory and fictional examples have separate claim IDs and
+- Policy, directory and prototype examples have separate claim IDs and
   provenance. If a deadline or visiting hours are absent from the sources,
   the plan tells the student which office can confirm them.
 - The rules work without credentials. To enable optional Claude interpretation
@@ -54,13 +55,16 @@ model. It builds its indexes at startup without an API key or Ollama.
   Pydantic schema and the real directory and falls back to the rules on
   errors. The composition call can select cited policy excerpts and a
   predefined lead-in. Contact fields always come from SQL.
+- “Where can I verify that?” opens the official references for the current
+  issue. This addresses the lost context in short follow-ups documented in
+  [Marcel’s student support deployment](https://aclanthology.org/2025.emnlp-demos.13/).
 
 ### Public reviewer build
 
 The public [Humraah demo](https://humraah-groww-demo.thilak-rk06.chatgpt.site/)
 uses the same turn engine. The Worker runs a SQLite-backed directory and
 short-lived conversation sessions through D1. It uses action plans compiled
-from official sources and labeled fictional examples. FastAPI retrieves
+from official sources and labeled prototype examples. FastAPI retrieves
 policy and examples through the existing LangGraph and ChromaDB pipeline and
 queries native SQLite for contacts. The public demo runs the rules by default.
 

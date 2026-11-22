@@ -1,9 +1,122 @@
 [
-  {"category":"Academic","subcategory":"supplementary_exam","department":"General","summary":"Keep the ERP notice and any registration error screenshot together. In one message, mention the course code, your batch and the date you tried to apply."},
-  {"category":"Academic","subcategory":"supplementary_exam","department":"General","summary":"Before walking to an office, check whether the issue is permission to apply or an ERP error. That distinction helps you pick the right contact."},
-  {"category":"Academic","subcategory":"grade_review","department":"General","summary":"Ask for an explanation of one specific discrepancy first. A short note naming the assessment is easier for an instructor to act on."},
-  {"category":"Academic","subcategory":"mid_sem_review","department":"General","summary":"Put the subject code and exam name in the email subject. Ask for the next script-viewing slot, then note the question numbers you want to discuss."},
-  {"category":"Academic","subcategory":"end_sem_appeal","department":"General","summary":"Write down what you think is wrong and where you spotted it. Keep a copy of your original message so you can follow up in the same thread."},
-  {"category":"Academic","subcategory":"attendance_waiver","department":"General","summary":"Prepare a short list of affected class dates and courses before talking to your advisor. Ask which documents to share and where to submit them."},
-  {"category":"Academic","subcategory":"escalation","department":"General","summary":"Keep the original subject line when following up. Put the decision you need and the deadline near the top of the message."}
+  {
+    "category": "Academic", "subcategory": "supplementary_exam", "department": "General",
+    "title": "Separate permission from a portal error",
+    "summary": "If ERP shows an error, save the exact error and what you were trying to do. If the screen works but you're unsure whether you're allowed to apply, put that question first when you contact the Academic Section."
+  },
+  {
+    "category": "Academic", "subcategory": "supplementary_exam", "department": "General",
+    "title": "Keep the notice and your attempt together",
+    "summary": "Save the current notice, a screenshot of any error, and when you tried to register. Put the course code and admission batch in the same message so the office can identify the notice you mean."
+  },
+  {
+    "category": "Academic", "subcategory": "supplementary_exam", "department": "General",
+    "title": "Ask one clear question after a missed window",
+    "summary": "Mention when you saw the notice and ask whether there is a late request route for your batch. If you get a verbal answer, make a quick note of what to do next and who to follow up with."
+  },
+  {
+    "category": "Academic", "subcategory": "supplementary_exam", "department": "General",
+    "title": "Keep your payment reference handy",
+    "summary": "If an amount was already debited, note the transaction reference and the status shown in ERP before asking support what happened. Share only the details the office needs, never your PIN or OTP."
+  },
+  {
+    "category": "Academic", "subcategory": "grade_review", "department": "General",
+    "title": "Find the assessment behind the grade",
+    "summary": "Check whether the concern is a marking error, a missing assessment, or a grade you want explained. Pick one and point to the entry or question you want the instructor to review."
+  },
+  {
+    "category": "Academic", "subcategory": "grade_review", "department": "General",
+    "title": "Make comparisons easy to check",
+    "summary": "If two places show different marks, note both values, where each appears, and the assessment date. Ask the instructor which record to use."
+  },
+  {
+    "category": "Academic", "subcategory": "grade_review", "department": "General",
+    "title": "Ask for feedback you can act on",
+    "summary": "If you're mainly worried about a low grade, ask which part of the assessment cost marks and whether you can view the evaluated work. Keep the first message focused on understanding the result."
+  },
+  {
+    "category": "Academic", "subcategory": "grade_review", "department": "General",
+    "title": "Keep a copy of what you asked",
+    "summary": "Write down the assessment, the question you raised and the response. If you need to follow up, you can refer to the earlier answer without explaining the entire case again."
+  },
+  {
+    "category": "Academic", "subcategory": "mid_sem_review", "department": "General",
+    "title": "Ask for a viewing slot",
+    "summary": "Put the course code and mid-sem assessment in the subject. Ask when and where you can view the script and whether you need to bring anything."
+  },
+  {
+    "category": "Academic", "subcategory": "mid_sem_review", "department": "General",
+    "title": "Pick the questions before you go",
+    "summary": "Write down the question numbers you want to discuss, especially if you noticed an unmarked page or a possible totalling error."
+  },
+  {
+    "category": "Academic", "subcategory": "mid_sem_review", "department": "General",
+    "title": "Ask about another slot if there’s a clash",
+    "summary": "If you have a lab or exam during the viewing time, tell the instructor what clashes and ask what alternative arrangements are available."
+  },
+  {
+    "category": "Academic", "subcategory": "mid_sem_review", "department": "General",
+    "title": "Check the announcement channel",
+    "summary": "Look at recent course announcements before sending a second message. If you find a viewing announcement, refer to it when asking the instructor about your case."
+  },
+  {
+    "category": "Academic", "subcategory": "end_sem_appeal", "department": "General",
+    "title": "Start with the clearest discrepancy",
+    "summary": "Write one sentence describing the specific error you think occurred and where you spotted it. Include the course code and ask the instructor to check that discrepancy."
+  },
+  {
+    "category": "Academic", "subcategory": "end_sem_appeal", "department": "General",
+    "title": "Write down the answer you need",
+    "summary": "Ask the instructor whether a change is possible. If they refer you to the Academic Section, ask which procedure and deadline apply to your admission batch."
+  },
+  {
+    "category": "Academic", "subcategory": "end_sem_appeal", "department": "General",
+    "title": "Keep earlier replies on the same thread",
+    "summary": "When following up on a grade issue, keep the original thread and the assessment reference. A short recap of what the instructor checked can save the next office time."
+  },
+  {
+    "category": "Academic", "subcategory": "end_sem_appeal", "department": "General",
+    "title": "Flag a real dependency",
+    "summary": "If the result affects another registration or a time-sensitive application, say what depends on it. Ask which part of the review you can complete while waiting."
+  },
+  {
+    "category": "Academic", "subcategory": "attendance_waiver", "department": "General",
+    "title": "Make a course-by-course list",
+    "summary": "Separate the affected dates by course and note any lab or assessment you missed. Bring that list when you ask your advisor what applies."
+  },
+  {
+    "category": "Academic", "subcategory": "attendance_waiver", "department": "General",
+    "title": "Confirm where documents belong",
+    "summary": "Keep relevant records ready and ask the designated office which documents it needs and which channel to use. Keep sensitive medical details out of class groups."
+  },
+  {
+    "category": "Academic", "subcategory": "attendance_waiver", "department": "General",
+    "title": "Check whether the record itself is wrong",
+    "summary": "If you attended and the record shows an absence, start with the specific class and date. Ask the instructor to check the entry before you look into a waiver."
+  },
+  {
+    "category": "Academic", "subcategory": "attendance_waiver", "department": "General",
+    "title": "Ask about compensating work",
+    "summary": "If you missed graded work as well as class, put both concerns on your list. Ask separately what you can do about the lab or assessment."
+  },
+  {
+    "category": "Academic", "subcategory": "escalation", "department": "General",
+    "title": "Forward the first message",
+    "summary": "When you follow up with the department office, keep the original subject line and thread. Add one sentence saying what decision you need and include any relevant deadline."
+  },
+  {
+    "category": "Academic", "subcategory": "escalation", "department": "General",
+    "title": "Ask who can take it up",
+    "summary": "If your advisor is unavailable, ask the office who is covering the issue and which inbox to use. Mention which course and batch the request concerns."
+  },
+  {
+    "category": "Academic", "subcategory": "escalation", "department": "General",
+    "title": "Track what you’ve already tried",
+    "summary": "Keep a short list of when you emailed, who replied, and what they suggested. You can share that recap if another person picks up the issue."
+  },
+  {
+    "category": "Academic", "subcategory": "escalation", "department": "General",
+    "title": "Give context before walking over",
+    "summary": "If a visit would help, call or email to confirm who handles the issue and when they're available. Take your course details and the earlier correspondence."
+  }
 ]

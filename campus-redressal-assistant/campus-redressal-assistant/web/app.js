@@ -28,10 +28,10 @@ const directoryResults = document.querySelector("#directory-results");
 const dialog = document.querySelector("#how-dialog");
 
 const TOPICS = {
-  supplementary_exam: ["Supplementary exam", "◷"],
-  grade_review: ["Grades and answer scripts", "≡"],
-  escalation: ["Faculty advisor", "…"],
-  attendance_waiver: ["Attendance waiver", "✓"],
+  supplementary_exam: ["Supplementary exams", "clock", "Registration, deadlines and ERP"],
+  grade_review: ["Grades and answer scripts", "pages", "Script viewing and grade appeals"],
+  escalation: ["Faculty advisor follow-up", "chat", "What to do when you’re waiting"],
+  attendance_waiver: ["Attendance waiver", "check", "Absences, records and paperwork"],
 };
 
 let ready = false;
@@ -99,7 +99,7 @@ function start(query, topic = null) {
   clear("", false);
   display(true);
   thread.append(message("user", query, button("quiet", "Edit question", () => clear(query))));
-  current.append(node("p", "helper", "Checking guidance…"));
+  current.append(node("p", "loading-message", "Checking campus guidance…"));
   runTurn({ text: query, topic });
 }
 
@@ -254,15 +254,19 @@ function showDirectory(open) {
   }
 }
 
-function renderSources(title, items, expanded) {
-  const panel = node("details", "plan-panel");
-  panel.open = expanded;
-  panel.append(node("summary", "", title));
+function renderSources(title, items, examples = false) {
+  const panel = node("details", `plan-panel source-panel${examples ? " tips-panel" : ""}`);
+  const heading = node("summary", "", title);
+  if (examples) heading.append(node("span", "source-badge", "Prototype examples"));
+  panel.append(heading);
   for (const source of items) {
     const item = node("div", "source-item");
+    if (source.title) item.append(node("h4", "tip-title", source.title));
     item.append(node("p", "", source.text));
-    if (source.url) item.append(link(source.label, source.url, "citation"));
-    else item.append(node("p", "citation", source.label));
+    if (!examples) {
+      if (source.url) item.append(link(source.label, source.url, "citation"));
+      else item.append(node("p", "citation", source.label));
+    }
     if (source.verified_at) item.append(node("p", "source-reviewed", `Source checked ${source.verified_at}`));
     panel.append(item);
   }
@@ -281,7 +285,6 @@ function renderPlan(plan) {
   article.append(summary);
   if (plan.supported) {
     const body = node("div", "plan-body");
-    if (plan.contacts.length) body.append(renderContacts(plan.contacts));
     for (const notice of plan.notices) {
       const panel = node("aside", "plan-notice");
       panel.append(node("strong", "", notice.title), node("p", "", notice.text));
@@ -292,15 +295,20 @@ function renderPlan(plan) {
       }
       body.append(panel);
     }
+    if (plan.contacts.length) body.append(renderContacts(plan.contacts));
     if (plan.related) {
       const related = node("section", "plan-panel related-plan");
       related.append(node("h3", "", plan.related.issue), node("p", "", plan.related.step));
       related.append(...plan.related.contacts.map((contact) => renderContact(contact)));
       body.append(related);
     }
-    if (plan.rules.length) body.append(renderSources("Official policy", plan.rules, false));
-    if (plan.tips.length) body.append(renderSources("Senior fundae · Fictional examples", plan.tips, false));
+    if (plan.rules.length) body.append(renderSources("Official policy", plan.rules));
+    if (plan.tips.length) body.append(renderSources("Senior tips", plan.tips, true));
     article.append(body);
+  } else {
+    const actions = node("div", "plan-actions");
+    actions.append(button("outline", "Search campus directory", () => showDirectory(true)));
+    article.append(actions);
   }
   current.replaceChildren(article);
   showReply(true);
@@ -437,11 +445,14 @@ try {
   const intake = await getIntake();
   ready = true;
   for (const scenario of intake.scenarios) {
-    const [title, icon] = TOPICS[scenario.tag] ?? [scenario.label, "·"];
+    const [title, icon, detail] = TOPICS[scenario.tag] ?? [scenario.label, "pages"];
     const topic = button("topic", "", () => start(title, scenario.tag));
-    const mark = node("span", "topic-mark", icon);
+    const mark = node("span", `topic-mark ${icon}`);
     mark.setAttribute("aria-hidden", "true");
-    topic.append(mark, node("span", "topic-name", title));
+    const content = node("span", "topic-content");
+    content.append(node("span", "topic-name", title));
+    if (detail) content.append(node("span", "topic-detail", detail));
+    topic.append(mark, content);
     topics.append(topic);
   }
   submit.disabled = false;

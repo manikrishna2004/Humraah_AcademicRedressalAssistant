@@ -41,6 +41,7 @@ export function suggestions(state, plan) {
     "Help me write the email",
     "Can I go in person?",
     state.tag === "supplementary_exam" ? "Where do I check the deadline?" : "Who should I contact?",
+    ...(plan.rules.some(({ url }) => url) ? ["Show me the official sources"] : []),
     "Switch issue",
   ];
 }
@@ -50,6 +51,7 @@ const FOLLOW_UPS = [
   ["draft", /\b(?:draft|template|write|wording|what (?:should|do|can) i (?:say|include|email|send))\b/i],
   ["visit", /\b(?:in person|visit|where (?:should|do|can) i go|which (?:room|building)|address|opening hours|office hours|what time|when (?:can|should) i (?:go|visit)|meet)\b/i],
   ["deadline", /\b(?:deadline|last date|how long|by when|application window|missed (?:it|the window)|today|tomorrow)\b/i],
+  ["source", /\b(?:official (?:sources?|rules?|policy|guidance)|(?:show|send|share|link to)(?: me)? (?:the )?(?:policy|rules?|handbook|source|link)|(?:where|how) (?:can|do|should) i (?:verify|check|confirm) (?:that|this|it)|sources?|citations?)\b/i],
   ["no_reply", /\b(?:already (?:emailed|sent|mailed)|no (?:reply|response)|still waiting|follow[- ]?up)\b/i],
   ["contact", /\b(?:contact|whom|who|mail id|email|call|number|phone)\b/i],
 ];
@@ -100,6 +102,15 @@ export function respond(text, state, plan, intent = followUpIntent(text)) {
     }
     const official = plan.rules.find((rule) => rule.url);
     return result("The timing depends on your course or admission batch. Ask the contact on your plan to confirm the date that applies to you.", [official, source], null, [official?.claim_id, contact?.claim_id]);
+  }
+  if (intent === "source") {
+    const official = plan.rules.filter(({ url }) => url);
+    if (official.length) {
+      return result(`Here are the official sources I used for ${plan.issue.toLowerCase()}. If your batch or situation isn’t covered, ask the listed contact which instructions apply.`,
+        official, null, official.map(({ claim_id }) => claim_id));
+    }
+    return result("I don’t have a published rule for this case. Ask the contact on your plan which procedure applies.",
+      [source], null, [contact?.claim_id]);
   }
   if (intent === "contact" && contact) {
     const channels = [contact.email, contact.phone].filter(Boolean);

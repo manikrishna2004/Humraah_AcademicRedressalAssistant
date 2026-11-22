@@ -51,7 +51,7 @@ def test_supplementary_deadline_links_to_campus_sources_and_surfaces_conflict(cl
     assert result["contacts"][0]["email"] == "arug@adm.iitkgp.ac.in"
     assert all(rule["url"].startswith("https://") for rule in result["rules"])
     assert any("item 9" in notice["text"] for notice in result["notices"])
-    assert result["tips"] and all("Fictional example" in tip["label"] for tip in result["tips"])
+    assert result["tips"] and all("Prototype example" in tip["label"] for tip in result["tips"])
 
 
 @pytest.mark.parametrize(
@@ -71,7 +71,7 @@ def test_grade_follow_up_returns_only_the_chosen_procedure(client, choice, title
     assert reference in result["rules"][0]["label"]
 
 
-def test_attendance_returns_real_department_and_fictional_fundae(client):
+def test_attendance_returns_real_department_and_prototype_tips(client):
     response = client.post("/api/plan", json={
         "query": "Attendance was marked absent.",
         "tag": "attendance_waiver",
@@ -81,7 +81,7 @@ def test_attendance_returns_real_department_and_fictional_fundae(client):
     result = response.json()
     assert result["contacts"][1]["email"] == "cseoffi@cse.iitkgp.ac.in"
     assert result["contacts"][1]["phone"] == "+91 3222 282255"
-    assert result["tips"][0]["label"] == "Fictional example for the prototype"
+    assert result["tips"][0]["label"] == "Prototype example"
     assert client.post("/api/plan", json={
         "query": "Attendance was marked absent.",
         "tag": "attendance_waiver",
@@ -106,7 +106,7 @@ def test_campus_advisor_follow_up_uses_the_correct_branch(client, tried_email, e
     result = answer(client, follow_up, tried_email)
     assert result["contacts"][0]["role"] == expected_role
     assert "48" not in result["next_step"]
-    assert result["tips"] and all("Fictional example" in tip["label"] for tip in result["tips"])
+    assert result["tips"] and all("Prototype example" in tip["label"] for tip in result["tips"])
     assert all(rule["url"] for rule in result["rules"])
 
 
@@ -131,7 +131,7 @@ def test_unsupported_issue_produces_no_academic_plan(client):
 
 
 def test_browser_entry_point_serves_required_assets(client):
-    assert "Find your" in client.get("/").text
+    assert 'id="query-form"' in client.get("/").text
     assert client.get("/style.css").status_code == 200
     assert client.get("/app.js").status_code == 200
     assert len(client.get("/api/options").json()["scenarios"]) == 4
@@ -219,3 +219,27 @@ def test_turn_validation_rejects_fake_contacts_departments_and_choices(client):
     finished = chat_turn(client, "Not yet", started, choice="no")
     assert finished["plan"]["contacts"][0]["id"] == "faculty-advisor"
     assert client.delete(f"/api/chat/{finished['session']}").status_code == 204
+
+
+def test_sources_follow_up_stays_with_the_current_procedure(client):
+    started = chat_turn(client, "I want to see my mid-sem answer script.")
+    result = chat_turn(client, "Where can I verify that?", started)
+    response = result["response"]
+    assert result["question"] is None
+    assert result["state"]["stage"] == "follow-up"
+    assert response["claim_ids"] == [claim["claim_id"] for claim in result["plan"]["rules"]]
+    assert any("§30.1.3" in link["label"] for link in response["links"])
+    assert all(link["url"].startswith("https://www.iitkgp.ac.in/") for link in response["links"])
+    assert client.delete(f"/api/chat/{result['session']}").status_code == 204
+
+
+def test_prototype_tips_are_separate_from_official_claims(client):
+    sources = client.get("/sources/senior-fundae.json").json()
+    assert len(sources) == 24
+    assert all(row["title"] and row["summary"] for row in sources)
+    result = chat_turn(client, "Can I apply for a supplementary exam?")
+    tips = result["plan"]["tips"]
+    assert len(tips) == 4
+    assert all(tip["type"] == "senior_fundae" and tip["title"] and tip["verified_at"] is None for tip in tips)
+    assert all(tip["label"] == "Prototype example" for tip in tips)
+    assert client.delete(f"/api/chat/{result['session']}").status_code == 204

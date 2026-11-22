@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Find academic guidance and official campus contacts at IIT Kharagpur.">
-  <meta name="theme-color" content="#102c2c">
+  <meta name="theme-color" content="#f2f5ff">
   <title>Humraah · IIT Kharagpur academic help</title>
   <link rel="preload" href="./fonts/instrument-serif.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="./fonts/dm-sans.woff2" as="font" type="font/woff2" crossorigin>
@@ -29,20 +29,27 @@
     <div id="guide">
       <section class="intro" id="intro">
         <div class="hero-copy">
-          <p class="context-label">IIT Kharagpur · Academic help</p>
-          <h1>Find your<br>next step.</h1>
-          <p class="intro-copy">Tell Humraah what happened. We’ll work out the next step, who to contact, and what to say.</p>
+          <p class="context-label"><span class="campus-mark" aria-hidden="true"></span>IIT Kharagpur</p>
+          <h1>Academic help,<br><em>within reach.</em></h1>
+          <p class="intro-copy">Find the right policy, the right office, and a next step you can take.</p>
         </div>
         <figure class="hero-photo">
           <img src="./assets/campus.webp" alt="IIT Kharagpur’s main building" width="960" height="628" fetchpriority="high">
-          <figcaption>Main Building, IIT Kharagpur</figcaption>
+          <span class="photo-grid" aria-hidden="true"></span>
+          <figcaption><span class="photo-pin" aria-hidden="true"></span>Main Building, IIT Kharagpur</figcaption>
         </figure>
       </section>
 
       <div class="workspace">
         <section class="help-desk" aria-label="Academic guidance conversation">
           <form class="composer" id="query-form">
-            <label for="query">What do you need help with?</label>
+            <div class="composer-heading">
+              <span class="composer-mark" aria-hidden="true"><i></i></span>
+              <div>
+                <label for="query">What do you need help with?</label>
+                <p class="helper">Describe what happened in your own words.</p>
+              </div>
+            </div>
             <textarea id="query" name="query" rows="3" maxlength="700" minlength="3" required enterkeyhint="send"
               placeholder="I missed the suppli form deadline. What can I do?"></textarea>
             <div class="composer-footer">
@@ -99,7 +106,7 @@
     </section>
 
     <footer class="footer">
-      <span>Student-built pilot</span>
+      <span>Student-built prototype</span>
       <button class="quiet" id="how-button" type="button">How it works</button>
       <a href="https://commons.wikimedia.org/wiki/File:Bubai_Manna_(IIT_Kharagpur_main_building).jpg"
          target="_blank" rel="noopener noreferrer">Campus photo</a>
@@ -109,7 +116,7 @@
   <dialog id="how-dialog" aria-labelledby="how-title">
     <h2 id="how-title">How Humraah works</h2>
     <p>Describe an issue or choose a topic. Reply in your own words or pick an option. After the plan, you can ask about a contact, an office visit, or what to write.</p>
-    <p>Campus policies and office details link to institute sources. Senior fundae are fictional examples for this prototype.</p>
+    <p>Campus policies and office details link to institute sources. Senior tips are prototype examples for preparing an email, a form, or an office visit.</p>
     <p>Campus photo by Bubamannaiitkgp11 via Wikimedia Commons, resized and shown in a cropped frame.
       <a href="https://creativecommons.org/licenses/by-sa/4.0/" target="_blank" rel="noopener noreferrer">CC BY-SA 4.0</a>.
     </p>
