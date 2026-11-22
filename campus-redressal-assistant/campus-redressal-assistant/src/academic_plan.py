@@ -2,9 +2,14 @@
 from __future__ import annotations
 
 import re
+from hashlib import sha256
 
 from src.academic_intake import ISSUES
 from src.state import RedressalState, RetrievedChunk
+
+# Date the working dataset was last checked against the linked public sources.
+SOURCE_REVIEW_DATE = "2026-11-21"
+DEMO_TIPS_URL = "./sources/senior-fundae.json"
 
 NEXT_STEPS = {
     "supplementary_exam": (
@@ -29,6 +34,18 @@ NEXT_STEPS = {
     ),
 }
 
+def _claim(kind: str, text: str, label: str, url: str | None, verified_at: str | None) -> dict:
+    digest = sha256(f"{url}|{text}".encode()).hexdigest()[:16]
+    return {
+        "claim_id": f"{kind}:{digest}",
+        "type": kind,
+        "text": text,
+        "label": label,
+        "url": url,
+        "verified_at": verified_at,
+    }
+
+
 def _rule(hit: RetrievedChunk) -> dict:
     text = hit["text"]
     metadata = hit.get("metadata", {})
@@ -36,11 +53,21 @@ def _rule(hit: RetrievedChunk) -> dict:
     label = metadata.get("source_label") or (
         f"Sample rulebook · {sample_clause.group()}" if sample_clause else "Sample rulebook"
     )
-    return {"text": text, "label": label, "url": metadata.get("source_url") or None}
+    url = metadata.get("source_url") or None
+    return _claim("policy", text, label, url, SOURCE_REVIEW_DATE if url else None)
 
 
 def _tip(hit: RetrievedChunk) -> dict:
-    return {"text": hit["text"], "label": "Fictional example for the prototype"}
+    return _claim("senior_fundae", hit["text"], "Fictional example for the prototype", DEMO_TIPS_URL, None)
+
+
+def directory_claim(contact: dict) -> dict:
+    return {
+        **contact,
+        "claim_id": f"directory:{contact['id']}",
+        "type": "directory",
+        "verified_at": SOURCE_REVIEW_DATE,
+    }
 
 
 def academic_plan(state: RedressalState) -> dict:
@@ -49,7 +76,7 @@ def academic_plan(state: RedressalState) -> dict:
     rules = [_rule(hit) for hit in state.get("retrieved_rules", [])][:3]
     tips = [_tip(hit) for hit in state.get("retrieved_senior_fundae", [])[:2]]
     notices = []
-    contacts = state.get("retrieved_directory", [])
+    contacts = [directory_claim(contact) for contact in state.get("retrieved_directory", []) if contact.get("id")]
     supported = bool(tag and tag in ISSUES)
     sent = state.get("formal_email_sent")
 
@@ -69,7 +96,11 @@ def academic_plan(state: RedressalState) -> dict:
         for rule in state.get("retrieved_rules", [])[:3]:
             difference = rule.get("metadata", {}).get("policy_difference")
             if difference:
-                notices.append({"title": "Sources give different instructions", "text": difference})
+                links = [{"label": item["label"], "url": item["url"]} for item in rules if item["url"]]
+                links += [
+                    {"label": contacts[0]["source_label"], "url": contacts[0]["url"]},
+                ] if contacts else []
+                notices.append({"title": "Sources give different instructions", "text": difference, "links": links})
 
         if not rules:
             notices.append({

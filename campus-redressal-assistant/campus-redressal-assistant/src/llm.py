@@ -48,7 +48,7 @@ INTENT_RULES: list[tuple[re.Pattern, dict[str, Any]]] = [
      {"category": "Academic", "subcategory": "end_sem_appeal"}),
     (re.compile(r"hostel|room allotment|\bmess\b", re.I),
      {"category": "Hostel", "subcategory": "hostel_admin"}),
-    (re.compile(r"\bfa\b|faculty advisor|\bhod\b|unresponsive|ignoring|escalat", re.I),
+    (re.compile(r"\bfa\b|faculty advisor|\bhod\b|head of department|department undergraduate committee|unresponsive|ignoring|escalat", re.I),
      {"category": "Academic", "subcategory": "escalation"}),
 ]
 

@@ -10,14 +10,13 @@ hostel issues, unresponsive advisors, escalation paths) by combining:
 - **Structured contacts** (who to email, which office, which hours) via
   deterministic SQL
 
-...and asks at most one clarifying question per turn, at exactly the point
-in the pipeline where the missing information actually matters -- then
-**resumes execution from that exact point** instead of restarting the
-whole pipeline.
+Humraah’s browser app handles each message as a new turn in the same
+conversation. The original LangGraph CLI below demonstrates checkpoint
+clarifications for the underlying retrieval pipeline.
 
 ## Humraah browser MVP
 
-From the repository root, run these commands with Python 3.11 or later:
+From the repository root, run these commands with Python 3.11+ and Node.js 22+:
 
 ```bash
 cd campus-redressal-assistant/campus-redressal-assistant
@@ -40,39 +39,54 @@ model. It builds its indexes at startup without an API key or Ollama.
   verified hours, with appointment notes where office schedules are absent.
 - `data/campus_senior_tips.json` contains fictional examples. The web app labels
   these next to the tips. Historical mock data serves the CLI evaluation.
-- The browser keeps one conversation in the tab and accepts up to two
-  clarification questions. Students can answer in their own words, edit an
-  answer, and continue with contextual contact, visit, deadline or email
-  drafting questions after the plan. The
-  local app runs the resolved request through LangGraph and restricts
-  retrieval to the selected source mode.
-
-The tests in `tests/test_web_mvp.py` verify expected answers, citations,
-clarification choices and fallback behavior through the browser API. They use
-separate queries from the indexed source documents. Run them alongside the
-original graph checks with `python -m pytest -q` after installing
-`requirements-web.txt` and `pytest`. The 16-query CLI eval remains available
-through `scripts/evaluate.py`.
+- `POST /api/chat/turn` stores a short-lived session on the server. Each
+  message can add or correct the issue, department, cohort, deadline or
+  actions already taken. The app asks one question when the answer changes
+  the guidance. Students can answer in their own words, revise an answer,
+  ask where to go, copy an email draft, or switch issues.
+- Policy, directory and fictional examples have separate claim IDs and
+  provenance. If a deadline or visiting hours are absent from the sources,
+  the plan tells the student which office can confirm them.
+- The rules work without credentials. To enable optional Claude interpretation
+  and composition, configure `HUMRAAH_ANTHROPIC_API_KEY` and `HUMRAAH_MODEL` on
+  the server. The interpretation call sends the current turn and relevant
+  conversation fields to Anthropic. The app validates the response against the
+  Pydantic schema and the real directory and falls back to the rules on
+  errors. The composition call can select cited policy excerpts and a
+  predefined lead-in. Contact fields always come from SQL.
 
 ### Public reviewer build
 
-The reviewer build uses the same interface, topic taxonomy and citations. It
-compiles action plans from the repository's source records. The browser
-classifies questions and handles follow-ups locally, then selects the plan
-for the student's answers. The hosted build queries the exported SQLite file
-with sql.js. The local Python app runs LangGraph, ChromaDB and native SQLite.
+The public [Humraah demo](https://humraah-groww-demo.thilak-rk06.chatgpt.site/)
+uses the same turn engine. The Worker runs a SQLite-backed directory and
+short-lived conversation sessions through D1. It uses action plans compiled
+from official sources and labeled fictional examples. FastAPI retrieves
+policy and examples through the existing LangGraph and ChromaDB pipeline and
+queries native SQLite for contacts. The public demo runs the rules by default.
 
-To rebuild and test the reviewer assets from the app directory:
+Build the Worker with esbuild and apply the schema in
+`deployment/migrations/0000_chat.sql` to its D1 binding:
 
 ```bash
-python scripts/build_reviewer_demo.py --output dist
-node deployment/reviewer_transport.test.mjs dist/demo-data.json
+python scripts/build_site_worker.py --output dist --esbuild /path/to/esbuild
 ```
+
+Run the test suite and expected-vs-actual conversations from the app directory:
+
+```bash
+python -m pytest -q
+python scripts/build_reviewer_demo.py --output /tmp/humraah-static
+node deployment/reviewer_transport.test.mjs /tmp/humraah-static/demo-data.json
+python eval/chat_held_out.py http://127.0.0.1:8000
+```
+
+Pass the public demo URL to the same evaluator to exercise the deployed API.
+See the [held-out results](campus-redressal-assistant/campus-redressal-assistant/eval/chat_results.md).
 
 The campus photo is by [Bubamannaiitkgp11 on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bubai_Manna_(IIT_Kharagpur_main_building).jpg).
 The resized WebP asset is available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
 
-## Why this exists
+## Original CLI architecture
 
 Most "RAG chatbot" demos retrieve-then-generate in one shot. Real
 grievance redressal usually needs a bit of dialogue: *which department are
@@ -82,7 +96,7 @@ that multi-turn behavior properly with **LangGraph's `interrupt()` /
 `Command(resume=...)`**, rather than re-running the LLM classification
 step on every turn.
 
-## Architecture
+### Workflow
 
 ```mermaid
 flowchart TD

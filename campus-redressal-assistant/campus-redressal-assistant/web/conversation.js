@@ -29,16 +29,21 @@ export function createConversation(intake) {
   const departments = intake.departments;
   const campusTopicNames = new Set(ISSUE_CHOICES.map(([key]) => key));
   const gradeHint = /\b(?:marks?|grades?|answer script|recheck|marking)\b/i;
-  const advisorHint = /(?:faculty advisor|\bhod\b).{0,45}(?:reply|repli|respond|reached|ignor|answer)|unresponsive/i;
+  const advisorHint = /(?:faculty advisor|head of department|department undergraduate committee).{0,45}(?:reply|repli|respond|reached|ignor|answer)|unresponsive/i;
 
-  function classify(query) {
+  function normalize(query) {
     for (const [pattern, replacement] of aliases) query = query.replace(pattern, replacement);
+    return query;
+  }
+
+  function classify(raw) {
+    const query = normalize(raw);
     const normalized = query.toLowerCase();
     const matches = intents.filter(([pattern]) => pattern.test(query)).map(([, tag]) => tag);
     const matchedGradeRoutes = matches.filter((tag) => tag === "mid_sem_review" || tag === "end_sem_appeal");
     const broadGrade = matchedGradeRoutes.length > 1 || matches.includes("grade_review") || gradeHint.test(query);
     const gradeRoute = matchedGradeRoutes.length === 1 ? matchedGradeRoutes[0] : broadGrade ? "grade_review" : null;
-    const advisor = matches.includes("escalation");
+    const advisor = matches.includes("escalation") || advisorHint.test(query);
     const academicRoutes = [
       ...matches.filter((tag) => tag === "supplementary_exam" || tag === "attendance_waiver"),
       gradeRoute,
@@ -48,6 +53,7 @@ export function createConversation(intake) {
     const sent = emailStatus(query);
 
     return {
+      issues: academicRoutes,
       tag: academicRoutes.length === 1 ? academicRoutes[0] : outside ? "other" : null,
       department: intake.departments.find((name) => (
         new RegExp(`\\b${name.split(" ")[0]}\\b`, "i").test(query)
@@ -200,5 +206,5 @@ export function createConversation(intake) {
     };
   }
 
-  return { start, question, answer, interpretReply, remember, reframe, planInput };
+  return { normalize, classify, start, question, answer, interpretReply, remember, reframe, planInput };
 }

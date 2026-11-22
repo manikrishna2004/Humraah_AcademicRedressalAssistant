@@ -36,6 +36,8 @@ _ALIASES = [
     (r"\bb\s*tech\b|\bbtech\b", "B.Tech"),
     (r"\b(?:dd|dual)\b(?![- ]degree)", "dual degree"),
     (r"(?<!faculty )\b(?:advisor|adviser|fa)\b", "Faculty Advisor"),
+    (r"\bhod\b", "head of department"),
+    (r"\bdugc\b", "department undergraduate committee"),
     (r"\b(?:grade issue|grade dispute|marks review|grade recheck|recheck my (?:marks|grade))\b", "grade review"),
     (r"\bmid(?:dle)?[- ]?semester\b", "mid-sem"),
     (r"\bend[- ]?semester\b", "end-sem"),

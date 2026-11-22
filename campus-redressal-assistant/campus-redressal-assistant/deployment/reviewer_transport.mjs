@@ -1,3 +1,6 @@
+import { createTurnEngine } from "../web/turn-engine.js";
+import { directoryTerms, planRoute, withContacts } from "../web/plan-data.js";
+
 let data;
 let database;
 
@@ -51,27 +54,21 @@ function select(db, sql, parameters) {
 }
 
 export function searchDirectory(db, directory, term) {
-  const normalized = term.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  const normalized = directoryTerms(term);
   return select(db, directory.searchSql, { $term: normalized });
 }
 
 export function lookupPlan(intake, db, input) {
-  if (!input.tag) return intake.fallback;
   const { directory } = intake;
-  const status = input.sent === null ? "unknown" : input.sent ? "yes" : "no";
-  const isEscalation = input.tag === "escalation";
-  const kinds = isEscalation ? directory.escalation[status] : directory.routes[input.tag] ?? [];
-  const plan = intake.plans[`${input.tag}|${isEscalation ? status : ""}`];
+  const { plan, routes } = planRoute(intake, input);
   if (!plan) return intake.fallback;
-
   const contacts = [];
-  for (const kind of kinds) {
-    const unit = kind === "department" && input.department ? input.department : "General";
+  for (const [kind, unit] of routes) {
     const search = (department) => select(db, directory.routeSql, { $kind: kind, $department: department })[0];
     const contact = search(unit) ?? (unit !== "General" ? search("General") : undefined);
     if (contact) contacts.push(contact);
   }
-  return { ...plan, contacts, department: input.department };
+  return withContacts(intake, plan, input.department, contacts);
 }
 
 export async function getPlan(input) {
@@ -82,4 +79,28 @@ export async function getPlan(input) {
 export async function getDirectory(term) {
   const [intake, db] = await Promise.all([getIntake(), getDatabase()]);
   return searchDirectory(db, intake.directory, term);
+}
+
+
+const sessions = new Map();
+
+export async function sendTurn({ session, revision = 0, rewind, ...event }) {
+  const intake = await getIntake();
+  const engine = createTurnEngine(intake);
+  const id = session ?? crypto.randomUUID();
+  const previous = sessions.get(id) ?? { revision: 0, turns: [] };
+  if (previous.revision !== revision) throw new Error("That turn has changed. Try again from the latest reply.");
+  const position = rewind ?? previous.turns.length;
+  const change = engine.transition(previous.turns[position - 1], event);
+  const [plan, relatedPlan] = change.state.pending_question ? [] : await Promise.all([
+    getPlan(change.main), change.related ? getPlan(change.related) : null,
+  ]);
+  const current = sessions.get(id);
+  if (session && (!current || current.revision !== revision)) throw new Error("This conversation has changed.");
+  sessions.set(id, { revision: revision + 1, turns: [...previous.turns.slice(0, position), change.state] });
+  return { ...engine.finish(change, plan, relatedPlan), session: id, revision: revision + 1, position };
+}
+
+export function closeChat(session) {
+  sessions.delete(session);
 }

@@ -123,3 +123,11 @@ def academic_contacts(tag: str | None, department: str | None, sent: bool | None
 
 def browser_directory() -> dict:
     return {"routeSql": ROUTE_SQL, "searchSql": SEARCH_SQL, "routes": ROUTES, "escalation": ESCALATION}
+
+
+def departments() -> list[str]:
+    with closing(_connect()) as connection:
+        return [name for (name,) in connection.execute(
+            "SELECT DISTINCT department FROM campus_contacts WHERE kind = 'department' AND department <> 'General' "
+            "ORDER BY sort_order"
+        )]

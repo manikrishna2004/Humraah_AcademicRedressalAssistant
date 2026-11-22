@@ -158,3 +158,64 @@ def test_resolved_browser_plan_uses_conditional_advisor_guidance_if_unsure(clien
     })
     assert response.status_code == 200
     assert "If you haven't emailed" in response.json()["next_step"]
+
+
+def chat_turn(client, text, previous=None, **fields):
+    if previous:
+        fields.update({key: previous[key] for key in ("session", "revision")})
+    response = client.post("/api/chat/turn", json={"text": text, **fields})
+    assert response.status_code == 200, response.text
+    assert response.headers["Cache-Control"] == "no-store"
+    return response.json()
+
+
+def test_held_out_chat_conversations(client):
+    from eval.chat_held_out import evaluate
+
+    results = evaluate(
+        lambda text, previous: chat_turn(client, text, previous),
+        lambda result: client.delete(f"/api/chat/{result['session']}"),
+    )
+    failed = [result for result in results if not result["passed"]]
+    assert not failed, failed
+
+
+def test_editing_writes_a_new_revision_and_switch_keeps_department(client):
+    start = chat_turn(client, "I need help with my grade. I'm in EE, 2023 batch.")
+    answered = chat_turn(client, "I want to see the paper", start, choice="mid_sem_review")
+    assert answered["plan"]["issue"] == "Mid-sem answer script"
+    switched = chat_turn(client, "Switch to an attendance waiver", answered)
+    assert switched["question"] is None
+    assert switched["state"]["department"]["value"] == "Electrical Engineering"
+    assert switched["state"]["cohort"]["value"]["admission_year"] == 2023
+    assert switched["plan"]["issue"] == "Attendance waiver"
+    edited = chat_turn(client, "I want to appeal my grade", switched, choice="end_sem_appeal", rewind=1)
+    assert edited["plan"]["issue"] == "End-sem grade concern"
+    assert edited["position"] == 1 and edited["revision"] == 4
+    stale = client.post("/api/chat/turn", json={
+        "text": "Who should I contact?", "session": answered["session"], "revision": 2,
+    })
+    assert stale.status_code == 409
+    assert client.delete(f"/api/chat/{edited['session']}").status_code == 204
+
+
+def test_turn_validation_rejects_fake_contacts_departments_and_choices(client):
+    from pydantic import ValidationError
+
+    from src.chat_model import TurnInterpretation
+
+    candidate = dict(intent="visit", issues=[], department=None, cohort=None, deadline=None,
+                     actions=[], corrections=[], pending_answer=None)
+    with pytest.raises(ValidationError):
+        TurnInterpretation.model_validate({**candidate, "contact": "fake@iitkgp.ac.in"})
+    with pytest.raises(ValidationError):
+        TurnInterpretation.model_validate({**candidate, "department": "Imaginary Engineering"},
+                                          context={"departments": ["Electrical Engineering"]})
+    started = chat_turn(client, "My faculty advisor hasn't replied")
+    rejected = client.post("/api/chat/turn", json={
+        "text": "fake", "choice": "fake", "session": started["session"], "revision": 1,
+    })
+    assert rejected.status_code == 422
+    finished = chat_turn(client, "Not yet", started, choice="no")
+    assert finished["plan"]["contacts"][0]["id"] == "faculty-advisor"
+    assert client.delete(f"/api/chat/{finished['session']}").status_code == 204

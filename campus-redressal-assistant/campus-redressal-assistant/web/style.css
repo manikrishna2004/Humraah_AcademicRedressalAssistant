@@ -234,3 +234,7 @@ dialog p, dialog form { margin-top: 12px; }
   .reply-controls textarea { font-size: 1rem; }
   .reply-controls .primary { padding-inline: 12px; }
 }
+
+.plan-notice .companion-links { margin-top: 8px; }
+.related-plan > p { margin: 5px 0 11px; }
+.source-reviewed { color: var(--muted); font-size: .78rem; margin-top: 4px; }

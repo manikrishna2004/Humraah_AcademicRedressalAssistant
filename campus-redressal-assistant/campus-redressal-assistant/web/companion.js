@@ -41,62 +41,72 @@ export function suggestions(state, plan) {
     "Help me write the email",
     "Can I go in person?",
     state.tag === "supplementary_exam" ? "Where do I check the deadline?" : "Who should I contact?",
+    "Switch issue",
   ];
 }
 
-export function respond(text, state, plan) {
-  const input = text.trim();
+const FOLLOW_UPS = [
+  ["thanks", /^(?:thanks|thank you|okay thanks|got it|shukriya)[!. ]*$/i],
+  ["draft", /\b(?:draft|template|write|wording|what (?:should|do|can) i (?:say|include|email|send))\b/i],
+  ["visit", /\b(?:in person|visit|where (?:should|do|can) i go|which (?:room|building)|address|opening hours|office hours|what time|when (?:can|should) i (?:go|visit)|meet)\b/i],
+  ["deadline", /\b(?:deadline|last date|how long|by when|application window|missed (?:it|the window)|today|tomorrow)\b/i],
+  ["no_reply", /\b(?:already (?:emailed|sent|mailed)|no (?:reply|response)|still waiting|follow[- ]?up)\b/i],
+  ["contact", /\b(?:contact|whom|who|mail id|email|call|number|phone)\b/i],
+];
+
+export function followUpIntent(text) {
+  return FOLLOW_UPS.find(([, pattern]) => pattern.test(text.trim()))?.[0] ?? "describe";
+}
+
+export function respond(text, state, plan, intent = followUpIntent(text)) {
   const contact = plan.contacts[0];
   const source = reference(contact);
-  const result = (message, links = [], draft = null) => ({ text: message, links: links.filter(Boolean), draft });
+  const result = (message, links = [], draft = null, claimIds = []) => ({
+    text: message, links: links.filter(Boolean), draft, claim_ids: claimIds.filter(Boolean),
+  });
 
-  if (/^(?:thanks|thank you|okay thanks|got it|shukriya)[!. ]*$/i.test(input)) {
-    return result("You’re welcome. If the office replies and you’re unsure what a step means, you can ask about it here.");
+  if (intent === "thanks") {
+    return result("You’re welcome. If the office replies and you’re unsure what a step means, ask me here.");
   }
   if (!plan.supported) {
     return result("Tell me what happened in a few words, or pick one of the academic topics to start again.");
   }
-  if (/\b(?:draft|template|write|wording|what (?:should|do|can) i (?:say|include|email|send))\b/i.test(input)) {
+  if (intent === "draft" || intent === "no_reply") {
     const note = EMAIL_NOTES[state.tag];
     if (note && contact) {
-      const [subject, body] = state.tag === "escalation" && state.sent === true ? [
+      const advisorEscalation = state.tag === "escalation" && state.sent === true;
+      const [subject, body] = advisorEscalation ? [
         "Follow-up on [academic issue] in [course code]",
-        "I emailed my faculty advisor on [date] about [one-sentence description]. Could you advise who can help with the next step? I’ve included the original message below for context.",
+        "I emailed my faculty advisor on [date] about [one-sentence description] and haven’t heard back. Could you let me know who can help with the next step? I’ve included the original thread below. The deadline, if applicable, is [date].",
       ] : note;
-      return result(
-        `Here’s a draft for ${contact.role}. Replace the bracketed details before sending.`,
-        [source],
-        `Subject: ${subject}\n\nHello,\n\n${body}\n\nThank you,\n[Your name]`,
-      );
+      const lead = advisorEscalation
+        ? `Forward your original email to ${contact.role} and mention any upcoming deadline. Here’s a draft you can adapt.`
+        : `Here’s a draft for ${contact.role}. Replace the bracketed details before sending.`;
+      const email = contact.email ? { label: contact.email, url: `mailto:${contact.email}` } : null;
+      return result(lead, [email, source], `Subject: ${subject}\n\nHello,\n\n${body}\n\nThank you,\n[Your name]`, [contact.claim_id]);
     }
   }
-  if (/\b(?:in person|visit|where (?:should|do|can) i go|which (?:room|building)|address|opening hours|office hours|what time|when (?:can|should) i (?:go|visit)|meet)\b/i.test(input)) {
-    if (contact) {
-      const details = [contact.office, contact.office_hours].filter(Boolean);
-      const location = details.length ? `${contact.role} — ${details.join(", ")}.` : `Start with ${contact.role}.`;
-      const visit = contact.visit_note || "Check the office listing to arrange a visit.";
-      return result(`${location} ${visit}`, [source]);
-    }
+  if (intent === "visit" && contact) {
+    const office = contact.office ? `${contact.role} is listed at ${contact.office}.` : `Start with ${contact.role}.`;
+    const hours = contact.office_hours ? `Published hours are ${contact.office_hours}.` : "The source doesn’t publish visiting hours.";
+    const visit = contact.visit_note || "Ask which room to go to and when someone can meet you.";
+    const phone = contact.phone ? { label: contact.phone, url: `tel:${contact.phone.replace(/[^+0-9]/g, "")}` } : null;
+    const email = contact.email ? { label: contact.email, url: `mailto:${contact.email}` } : null;
+    return result(`${office} ${hours} ${visit}`, [phone, email, source], null, [contact.claim_id]);
   }
-  if (/\b(?:deadline|last date|how long|by when|application window|missed (?:it|the window)|today|tomorrow)\b/i.test(input)) {
+  if (intent === "deadline") {
     if (state.tag === "supplementary_exam") {
-      return result("Check the calendar and the latest ERP notice for your session. If the window has closed, ask the UG Academic Section whether a late request is possible for your batch.", [CALENDAR, ERP, source]);
+      return result("Check the calendar and the latest ERP notice for your session. If the window has closed, ask the UG Academic Section whether a late request is possible for your batch.", [CALENDAR, ERP, source], null, [contact?.claim_id]);
     }
     const official = plan.rules.find((rule) => rule.url);
-    return result("The timing depends on your course or admission batch. Ask the contact on your plan to confirm the date that applies to you.", [official, source]);
+    return result("The timing depends on your course or admission batch. Ask the contact on your plan to confirm the date that applies to you.", [official, source], null, [official?.claim_id, contact?.claim_id]);
   }
-  if (/\b(?:already (?:emailed|sent|mailed)|no (?:reply|response)|still waiting|follow[- ]?up)\b/i.test(input)) {
-    const next = state.tag === "escalation"
-      ? "Ask the department office who can take the issue forward if you’re still waiting."
-      : `Follow up with ${contact?.role || "the listed contact"} on the same thread.`;
-    return result(`Keep the original email and make the deadline clear. ${next}`, [source]);
-  }
-  if (/\b(?:contact|whom|who|mail id|email|call|number|phone)\b/i.test(input) && contact) {
+  if (intent === "contact" && contact) {
     const channels = [contact.email, contact.phone].filter(Boolean);
-    const text = `For this issue, start with ${contact.role}.${channels.length ? ` ${channels.join(" · ")}.` : ""} ${contact.detail}`;
+    const message = `For this issue, start with ${contact.role}.${channels.length ? ` ${channels.join(" · ")}.` : ""} ${contact.detail}`;
     const email = contact.email ? { label: contact.email, url: `mailto:${contact.email}` } : null;
     const phone = contact.phone ? { label: contact.phone, url: `tel:${contact.phone.replace(/[^+0-9]/g, "")}` } : null;
-    return result(text, [email, phone, source]);
+    return result(message, [email, phone, source], null, [contact.claim_id]);
   }
   return result("I can help with the next contact, an office visit, or a draft message for this issue. If something has changed, tell me what’s different.");
 }

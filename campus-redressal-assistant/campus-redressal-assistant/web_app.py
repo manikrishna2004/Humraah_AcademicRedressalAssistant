@@ -10,12 +10,14 @@ from typing import Annotated, Literal
 from uuid import UUID, uuid4
 
 from fastapi import FastAPI, HTTPException, Response
+from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 from langgraph.checkpoint.memory import MemorySaver
 from langgraph.types import Command
 from pydantic import BaseModel, ConfigDict, StringConstraints
 
 from src.academic_intake import ISSUES, browser_intake
+from src.chat_session import ChatSessions, ChatTurn
 from src.graph import build_graph
 from src.llm import DEGREE_PROGRAMS, DEPARTMENTS
 from src.stores import campus_directory, rulebook_store, senior_experience_store
@@ -65,6 +67,7 @@ async def lifespan(app: FastAPI):
     app.state.checkpointer = MemorySaver()
     app.state.graph = build_graph(app.state.checkpointer)
     app.state.pending = {}
+    app.state.chat = ChatSessions(resolve_plan, campus_directory.departments())
     yield
 
 
@@ -126,6 +129,29 @@ async def advance(thread_id: str, pending: Pending, graph_input: dict | Command)
 
     await forget(thread_id)
     return {"kind": "plan", **result["action_plan"]}
+
+
+@app.post("/api/chat/turn")
+async def chat_turn(request: ChatTurn):
+    try:
+        return await app.state.chat.turn(request)
+    except (FileNotFoundError, RuntimeError, TimeoutError) as error:
+        raise HTTPException(503, "Humraah guidance is temporarily unavailable. Try again.") from error
+
+
+@app.delete("/api/chat/{session}", status_code=204)
+def discard_chat(session: UUID):
+    app.state.chat.discard(session)
+    return Response(status_code=204)
+
+
+@app.get("/sources/senior-fundae.json")
+def fictional_sources():
+    return FileResponse(ROOT / "data" / "campus_senior_tips.json", media_type="application/json")
+
+
+async def resolve_plan(data: dict) -> dict:
+    return await plan(PlanRequest.model_validate(data))
 
 
 @app.post("/api/plan")

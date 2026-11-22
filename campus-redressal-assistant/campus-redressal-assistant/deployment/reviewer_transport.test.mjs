@@ -138,3 +138,47 @@ test("the companion drafts a useful email and grounds visit and deadline replies
   assert.ok(respond("Where is the deadline?", state, result).links.some(({ url }) => url.includes("academic-calendar")));
   assert.ok(suggestions(state, result).includes("Help me write the email"));
 });
+
+test("model composition accepts cited policy text and rejects invented wording and contacts", async () => {
+  const { composeFromClaims } = await import("../web/grounding.js");
+  const guidance = plan(start("I missed my supplementary exam form deadline"));
+  const policy = guidance.rules[0];
+  const contact = guidance.contacts[0];
+  const selected = { transition: "context", claim_ids: [policy.claim_id] };
+  assert.deepEqual(composeFromClaims(selected, guidance.rules).links, [{ label: policy.label, url: policy.url }]);
+  assert.ok(composeFromClaims(selected, guidance.rules).text.endsWith(policy.text));
+  assert.equal(composeFromClaims({ ...selected, text: "Visit in Room 123 at 4 PM" }, guidance.rules), null);
+  assert.equal(composeFromClaims({ ...selected, claim_ids: [contact.claim_id] }, [...guidance.rules, contact]), null);
+  assert.equal(composeFromClaims({ ...selected, claim_ids: ["made-up"] }, guidance.rules), null);
+});
+
+test("model interpretation receives normalized campus slang and ignores ungrounded dates", async () => {
+  const { createTurnEngine } = await import("../web/turn-engine.js");
+  const { suggestInterpretation, mergeInterpretations, composeGuidance } = await import("../web/model-adapter.js");
+  const turnEngine = createTurnEngine(intake);
+  const original = globalThis.fetch;
+  const text = "FA, suppli, HOD, DUGC";
+  const normalized = turnEngine.normalize(text);
+  const rules = turnEngine.interpret(null, { text });
+  const candidate = {
+    ...rules, deadline: { raw: "tomorrow at 3 pm", urgent: true }, department: "Electrical Engineering",
+  };
+  try {
+    globalThis.fetch = async (_url, options) => {
+      const input = JSON.parse(JSON.parse(options.body).messages[0].content);
+      assert.match(input.text, /Faculty Advisor, supplementary exam, head of department, department undergraduate committee/);
+      return Response.json({ content: [{ type: "text", text: JSON.stringify(candidate) }] });
+    };
+    const proposal = await suggestInterpretation({ key: "test-key", id: "test-model" }, intake, null, normalized, {});
+    assert.deepEqual(proposal, candidate);
+    const parsed = mergeInterpretations(rules, proposal, normalized);
+    assert.equal(parsed.deadline, null);
+    const change = turnEngine.transition(null, { text }, parsed, rules);
+    assert.deepEqual(change.state.department, { value: "Electrical Engineering", source: "inferred" });
+    globalThis.fetch = async () => { throw new Error("provider unavailable"); };
+    assert.equal(await suggestInterpretation({ key: "test-key", id: "test-model" }, intake, null, normalized, {}), null);
+    assert.equal(await composeGuidance({ key: "test-key", id: "test-model" }, plan(start("suppli")), "supplementary_exam"), null);
+  } finally {
+    globalThis.fetch = original;
+  }
+});

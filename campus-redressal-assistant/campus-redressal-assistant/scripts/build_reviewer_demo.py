@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
 from src.academic_intake import ISSUES, browser_intake
-from src.academic_plan import academic_plan
+from src.academic_plan import SOURCE_REVIEW_DATE, academic_plan
 from src.stores.campus_directory import browser_directory, load_campus
 
 
@@ -34,18 +34,22 @@ def export_plans(data: Path) -> dict:
 
 def build(output: Path) -> None:
     output.mkdir(parents=True, exist_ok=True)
-    for name in ("index.html", "app.js", "style.css", "conversation.js", "companion.js"):
+    for name in ("index.html", "app.js", "style.css", "conversation.js", "companion.js", "turn-engine.js", "plan-data.js"):
         shutil.copyfile(ROOT / "web" / name, output / name)
     for name in ("fonts", "assets"):
         shutil.copytree(ROOT / "web" / name, output / name, dirs_exist_ok=True)
     shutil.copytree(ROOT / "deployment" / "vendor", output / "vendor", dirs_exist_ok=True)
-    shutil.copyfile(ROOT / "deployment" / "reviewer_transport.mjs", output / "transport.js")
+    transport = (ROOT / "deployment" / "reviewer_transport.mjs").read_text(encoding="utf-8")
+    (output / "transport.js").write_text(transport.replace('"../web/', '"./'), encoding="utf-8")
 
     data = ROOT / "data"
     load_campus(data / "campus_directory.json", output / "campus-directory.sqlite")
+    (output / "sources").mkdir(exist_ok=True)
+    shutil.copyfile(data / "campus_senior_tips.json", output / "sources" / "senior-fundae.json")
     payload = {
         **browser_intake(),
         "fallback": academic_plan({}),
+        "sourceReviewDate": SOURCE_REVIEW_DATE,
         "plans": export_plans(data),
         "directory": browser_directory(),
     }
