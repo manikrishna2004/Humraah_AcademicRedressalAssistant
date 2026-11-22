@@ -64,8 +64,9 @@ from official sources and labeled fictional examples. FastAPI retrieves
 policy and examples through the existing LangGraph and ChromaDB pipeline and
 queries native SQLite for contacts. The public demo runs the rules by default.
 
-Build the Worker with esbuild and apply the schema in
-`deployment/migrations/0000_chat.sql` to its D1 binding:
+Build the Worker with esbuild. The deployed Site binds D1 as `DB` in
+`.openai/hosting.json` and packages the SQL migration from
+`deployment/migrations/0000_chat.sql` in the managed `drizzle` migration layout.
 
 ```bash
 python scripts/build_site_worker.py --output dist --esbuild /path/to/esbuild
@@ -80,8 +81,8 @@ node deployment/reviewer_transport.test.mjs /tmp/humraah-static/demo-data.json
 python eval/chat_held_out.py http://127.0.0.1:8000
 ```
 
-Pass the public demo URL to the same evaluator to exercise the deployed API.
-See the [held-out results](campus-redressal-assistant/campus-redressal-assistant/eval/chat_results.md).
+The public demo was also checked in Chrome for a mixed-issue plan, a visit
+follow-up and a typed grade clarification. See the [held-out results](campus-redressal-assistant/campus-redressal-assistant/eval/chat_results.md).
 
 The campus photo is by [Bubamannaiitkgp11 on Wikimedia Commons](https://commons.wikimedia.org/wiki/File:Bubai_Manna_(IIT_Kharagpur_main_building).jpg).
 The resized WebP asset is available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).

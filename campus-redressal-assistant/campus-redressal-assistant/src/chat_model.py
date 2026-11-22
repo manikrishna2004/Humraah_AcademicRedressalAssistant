@@ -48,8 +48,3 @@ class TurnInterpretation(StrictModel):
         if value is not None and value not in (info.context or {}).get("departments", ()):
             raise ValueError("Department is absent from the directory")
         return value
-
-
-class ClaimSelection(StrictModel):
-    transition: Literal["none", "context", "next_step"]
-    claim_ids: list[str] = Field(min_length=1, max_length=2)
