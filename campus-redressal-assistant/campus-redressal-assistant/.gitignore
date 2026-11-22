@@ -7,3 +7,5 @@ data/chroma/
 data/directory.db
 data/checkpoints.sqlite
 dist/
+
+node_modules/
